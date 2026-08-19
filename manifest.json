@@ -1,0 +1,11 @@
+{
+  "name": "Shiny Living Dex Tracker",
+  "short_name": "Shiny Dex",
+  "description": "National Pokédex shiny living dex tracker — Gen 1–9",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0018",
+  "theme_color": "#6a0dad",
+  "orientation": "portrait",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
