@@ -1,76 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#1a0533">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Shiny Dex">
-  <title>Shiny Living Dex Tracker</title>
-  <link rel="manifest" href="manifest.json">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-    body{min-height:100vh;background:linear-gradient(160deg,#0a0018 0%,#1a0533 50%,#0d0a2e 100%);font-family:'Segoe UI',system-ui,sans-serif;color:#f0e8ff;padding-bottom:60px}
-    header{background:linear-gradient(90deg,#6a0dad 0%,#ff69b4 50%,#ffd700 100%);padding:22px 16px 16px;text-align:center;box-shadow:0 4px 24px rgba(255,105,180,0.4)}
-    .sub{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.75;margin-bottom:4px}
-    h1{font-size:22px;font-weight:800;letter-spacing:-.5px;text-shadow:0 2px 12px rgba(255,215,0,0.6);margin-bottom:4px}
-    .tag{font-size:12px;opacity:.8}
-    main{padding:14px 12px 0}
-    .sticky-controls{position:sticky;top:0;z-index:10;background:#150430;padding:10px 0 8px;margin:0 -12px;padding-left:12px;padding-right:12px;box-shadow:0 6px 12px -4px rgba(0,0,0,0.4)}
-    .gen-pct{font-size:9px;opacity:.55;font-weight:400;letter-spacing:0;text-transform:none;margin-left:6px}
-    #top-btn{position:fixed;bottom:18px;right:18px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6a0dad,#ff69b4);border:none;color:#fff;font-size:18px;box-shadow:0 4px 16px rgba(0,0,0,0.5);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:20}
-    #top-btn.show{display:flex}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-    .stat-box{background:rgba(255,255,255,0.07);border-radius:10px;padding:10px 8px;text-align:center;border:1px solid rgba(255,105,180,0.2)}
-    .stat-label{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-    .stat-val{font-size:16px;font-weight:800}
-    .stat-val.shiny{color:#ffd700}
-    .stat-val.luxury{color:#e74c3c}
-    .stat-val.wild{color:#2ecc71}
-    .progress-bar-wrap{background:rgba(255,255,255,0.1);border-radius:99px;height:8px;overflow:hidden;margin-bottom:12px}
-    .progress-bar-fill{height:100%;background:linear-gradient(90deg,#6a0dad,#ff69b4,#ffd700);border-radius:99px;transition:width .3s}
-    .controls{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
-    #search{flex:1 1 140px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,105,180,0.25);border-radius:8px;padding:8px 11px;color:#f0e8ff;font-size:13px;outline:none}
-    #search::placeholder{color:rgba(240,232,255,0.35)}
-    .fbtns{display:flex;gap:5px;flex-wrap:wrap}
-    .filter-group{display:flex;gap:5px;flex-wrap:wrap}
-    .ftog{display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:7px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:#b0a0c8;font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap;user-select:none}
-    .ftog .state{font-size:10px;font-weight:700;opacity:.6;min-width:40px}
-    .ftog.have{border-color:rgba(255,215,0,0.5);background:rgba(255,215,0,0.1);color:#ffd700}
-    .ftog.have .state{opacity:1;color:#ffd700}
-    .ftog.havent{border-color:rgba(231,76,60,0.5);background:rgba(231,76,60,0.1);color:#e74c3c}
-    .ftog.havent .state{opacity:1;color:#e74c3c}
-    .freset{padding:7px 10px;border-radius:7px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#777;font-size:11px;cursor:pointer;transition:all .15s}
-    .freset:active{background:rgba(255,255,255,0.1);color:#ccc}
-    .io-btns{display:flex;gap:6px;margin-top:8px}
-    .io-btn{flex:1;padding:8px;border-radius:7px;border:1px solid rgba(255,105,180,0.2);background:rgba(255,255,255,0.05);color:#c0b0d8;font-size:12px;cursor:pointer;text-align:center;transition:all .15s}
-    .io-btn:active{background:rgba(106,13,173,0.3)}
-    .jumps{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
-    .gj{padding:5px 9px;border-radius:6px;border:1px solid rgba(255,215,0,0.2);background:rgba(255,255,255,0.04);color:#c0b0d8;font-size:11px;cursor:pointer;transition:all .15s}
-    .gj:active{background:rgba(255,215,0,0.2)}
-    .gj.form-jump{border-color:rgba(180,130,255,0.3);color:#c9b8f0}
-    .section-header{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 4px 6px;color:#ffd700;opacity:.6}
-    .section-header.form-section{color:#c084fc;opacity:.7}
-    #list{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}
-    .full-row{grid-column:1/-1}
-    .card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 10px 8px;transition:border-color .15s}
-    .card.has-shiny{border-color:rgba(255,215,0,0.45);background:rgba(255,215,0,0.05)}
-    .card-num{font-size:10px;opacity:.4;margin-bottom:2px}
-    .card-name{font-size:12px;font-weight:600;color:#e0d0ff;margin-bottom:6px;line-height:1.3}
-    .form-tag{display:inline-block;font-size:9px;background:rgba(106,13,173,0.45);border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;color:#c9b8f0}
-    .checks{display:flex;flex-direction:column;gap:5px}
-    .check-row{display:flex;align-items:center;gap:7px;cursor:pointer;padding:3px 0;user-select:none}
-    .box{width:16px;height:16px;border-radius:3px;border:1.5px solid rgba(255,255,255,0.25);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s}
-    .shiny-box{border-color:#b8960c}
-    .shiny-box.checked{background:rgba(255,215,0,0.25);color:#ffd700;border-color:#ffd700}
-    .luxury-box{border-color:#922b21}
-    .luxury-box.checked{background:rgba(192,57,43,0.25);color:#e74c3c;border-color:#e74c3c}
-    .wild-box{border-color:#1e8449}
-    .wild-box.checked{background:rgba(39,174,96,0.2);color:#2ecc71;border-color:#2ecc71}
-    .check-label{font-size:11px;opacity:.65}
-    .empty{text-align:center;padding:40px 0;opacity:.4;font-size:14px;grid-column:1/-1}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a0533">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Shiny Dex">
+<title>Shiny Living Dex Tracker</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{min-height:100vh;background:linear-gradient(160deg,#0a0018 0%,#1a0533 50%,#0d0a2e 100%);font-family:'Segoe UI',system-ui,sans-serif;color:#f0e8ff;padding-bottom:70px}
+header{background:linear-gradient(90deg,#6a0dad 0%,#ff69b4 50%,#ffd700 100%);padding:22px 16px 16px;text-align:center;box-shadow:0 4px 24px rgba(255,105,180,0.4)}
+.sub{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.75;margin-bottom:4px}
+h1{font-size:22px;font-weight:800;letter-spacing:-.5px;text-shadow:0 2px 12px rgba(255,215,0,0.6);margin-bottom:4px}
+.tag{font-size:12px;opacity:.85}
+main{padding:14px 12px 0}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.stat-box{background:rgba(255,255,255,0.07);border-radius:10px;padding:8px 4px;text-align:center;border:1px solid rgba(255,105,180,0.2)}
+.stat-label{font-size:9px;opacity:.6;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.stat-val{font-size:15px;font-weight:800}
+.stat-val.shiny{color:#ffd700}
+.stat-val.luxury{color:#e74c3c}
+.stat-val.wild{color:#2ecc71}
+.stat-val.enc{color:#7df9ff}
+.progress-bar-wrap{background:rgba(255,255,255,0.1);border-radius:99px;height:8px;overflow:hidden;margin-bottom:10px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,#6a0dad,#ff69b4,#ffd700);border-radius:99px;transition:width .3s}
+
+/* backup & settings */
+details.tools{background:rgba(255,255,255,0.05);border:1px solid rgba(255,105,180,0.2);border-radius:10px;padding:9px 12px;margin-bottom:10px}
+details.tools summary{font-size:12px;cursor:pointer;color:#c0b0d8;list-style:none}
+details.tools summary::-webkit-details-marker{display:none}
+.tools-body{margin-top:10px}
+.io-btns{display:flex;gap:6px}
+.io-btn{flex:1;padding:9px;border-radius:7px;border:1px solid rgba(255,105,180,0.2);background:rgba(255,255,255,0.05);color:#c0b0d8;font-size:12px;cursor:pointer;text-align:center;font-family:inherit}
+.io-btn:active{background:rgba(106,13,173,0.3)}
+.setting{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:12px;cursor:pointer}
+.setting input{width:16px;height:16px}
+.setting-note{font-size:10px;opacity:.5;margin-top:4px;line-height:1.4}
+
+/* sticky controls */
+.sticky-controls{position:sticky;top:0;z-index:10;background:#150430;margin:0 -12px;padding:8px 12px;box-shadow:0 6px 12px -4px rgba(0,0,0,0.4)}
+.search-row{display:flex;gap:6px}
+#search{flex:1;min-width:0;background:rgba(255,255,255,0.08);border:1px solid rgba(255,105,180,0.25);border-radius:8px;padding:8px 11px;color:#f0e8ff;font-size:13px;outline:none}
+#search::placeholder{color:rgba(240,232,255,0.35)}
+.fcollapse{flex:0 0 auto;padding:7px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:#c0b0d8;font-size:11px;cursor:pointer;font-family:inherit}
+#filter-block.collapsed{display:none}
+.filter-group{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.ftog{padding:6px 8px;border-radius:7px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:#b0a0c8;font-size:11px;cursor:pointer;white-space:nowrap;user-select:none;font-family:inherit}
+.ftog.have{border-color:rgba(255,215,0,0.5);background:rgba(255,215,0,0.1);color:#ffd700}
+.ftog.havent{border-color:rgba(231,76,60,0.5);background:rgba(231,76,60,0.1);color:#e74c3c}
+.ftog.view-on{border-color:rgba(125,249,255,0.6);background:rgba(125,249,255,0.12);color:#7df9ff;font-weight:700}
+.freset{padding:6px 9px;border-radius:7px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#888;font-size:11px;cursor:pointer;font-family:inherit}
+.jumps{display:flex;gap:4px;overflow-x:auto;margin-top:6px;padding-bottom:2px;scrollbar-width:none}
+.jumps::-webkit-scrollbar{display:none}
+.gj{flex:0 0 auto;padding:5px 9px;border-radius:6px;border:1px solid rgba(255,215,0,0.2);background:rgba(255,255,255,0.04);color:#c0b0d8;font-size:11px;cursor:pointer;font-family:inherit}
+.gj.form-jump{border-color:rgba(180,130,255,0.3);color:#c9b8f0}
+
+/* list */
+.section-header{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 4px 6px;color:#ffd700;opacity:.7}
+.section-header.form-section{color:#c084fc}
+.section-header.hunt-section{color:#7df9ff;opacity:.9}
+.gen-pct{font-size:9px;opacity:.7;font-weight:400;letter-spacing:0;text-transform:none;margin-left:6px}
+.section-note{font-size:11px;opacity:.5;padding:0 4px 4px;text-transform:none;letter-spacing:0;font-weight:400}
+#list{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}
+.full-row{grid-column:1/-1}
+.card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:8px 10px 8px;transition:border-color .15s}
+.card.has-shiny{border-color:rgba(255,215,0,0.45);background:rgba(255,215,0,0.05)}
+.card.hunting{border-color:rgba(125,249,255,0.55);background:rgba(125,249,255,0.06)}
+.card.na{opacity:.45}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.card-num{font-size:10px;opacity:.45}
+.card-box{font-size:9px;opacity:.55;margin-left:6px;color:#c9b8f0}
+.more-btn{background:rgba(255,255,255,0.09);border:none;color:#c0b0d8;border-radius:6px;width:30px;height:24px;font-size:15px;line-height:1;cursor:pointer;font-family:inherit}
+.card-name{font-size:12px;font-weight:600;color:#e0d0ff;margin-bottom:5px;line-height:1.3}
+.form-tag{display:inline-block;font-size:9px;background:rgba(106,13,173,0.45);border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;color:#c9b8f0}
+.card-meta{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px}
+.pill{font-size:9px;padding:1px 6px;border-radius:99px;background:rgba(255,255,255,0.08);color:#c0b0d8}
+.pill.cnt{color:#7df9ff}
+.pill.date{color:#ffd700}
+.pill.hunt{color:#7df9ff;background:rgba(125,249,255,0.12)}
+.checks{display:flex;flex-direction:column;gap:4px}
+.check-row{display:flex;align-items:center;gap:7px;cursor:pointer;padding:3px 0;user-select:none}
+.check-row.disabled{opacity:.35;cursor:not-allowed}
+.box{width:16px;height:16px;border-radius:3px;border:1.5px solid rgba(255,255,255,0.25);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s}
+.shiny-box{border-color:#b8960c}
+.shiny-box.checked{background:rgba(255,215,0,0.25);color:#ffd700;border-color:#ffd700}
+.luxury-box{border-color:#922b21}
+.luxury-box.checked{background:rgba(192,57,43,0.25);color:#e74c3c;border-color:#e74c3c}
+.wild-box{border-color:#1e8449}
+.wild-box.checked{background:rgba(39,174,96,0.2);color:#2ecc71;border-color:#2ecc71}
+.check-label{font-size:11px;opacity:.7}
+.quick-plus{margin-top:6px;width:100%;padding:8px;border-radius:8px;border:1px solid rgba(125,249,255,0.5);background:rgba(125,249,255,0.12);color:#7df9ff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit}
+.quick-plus:active{background:rgba(125,249,255,0.3)}
+.empty{text-align:center;padding:40px 0;opacity:.4;font-size:14px}
+#top-btn{position:fixed;bottom:18px;right:18px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6a0dad,#ff69b4);border:none;color:#fff;font-size:18px;box-shadow:0 4px 16px rgba(0,0,0,0.5);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:20}
+#top-btn.show{display:flex}
+
+/* details sheet */
+#sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:none;align-items:flex-end;z-index:50}
+#sheet-bg.open{display:flex}
+#sheet{width:100%;max-height:90vh;overflow-y:auto;background:#1a0b3d;border-top-left-radius:18px;border-top-right-radius:18px;padding:16px 16px 28px;box-shadow:0 -8px 32px rgba(0,0,0,0.6);border-top:1px solid rgba(255,105,180,0.3)}
+.sh-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:8px}
+.sh-title{font-size:18px;font-weight:800}
+.sh-sub{font-size:11px;opacity:.6;margin-top:2px}
+.sh-x{flex:0 0 auto;background:rgba(255,255,255,0.08);border:none;color:#ddd;border-radius:8px;width:34px;height:34px;font-size:16px;cursor:pointer}
+.sh-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px}
+.sh-grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.tbtn{padding:11px 6px;border-radius:9px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#c0b0d8;font-size:12px;cursor:pointer;font-family:inherit}
+.tbtn.on-shiny{border-color:#ffd700;background:rgba(255,215,0,0.18);color:#ffd700;font-weight:700}
+.tbtn.on-lux{border-color:#e74c3c;background:rgba(231,76,60,0.18);color:#e74c3c;font-weight:700}
+.tbtn.on-wild{border-color:#2ecc71;background:rgba(46,204,113,0.16);color:#2ecc71;font-weight:700}
+.tbtn.on-hunt{border-color:#7df9ff;background:rgba(125,249,255,0.16);color:#7df9ff;font-weight:700}
+.tbtn.on-na{border-color:#aaa;background:rgba(255,255,255,0.14);color:#fff;font-weight:700}
+.tbtn:disabled{opacity:.35;cursor:not-allowed}
+.sh-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;opacity:.55;margin:12px 0 6px}
+.sh-counter{display:grid;grid-template-columns:60px 1fr 60px;gap:6px}
+.sh-counter2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+#sh-count{text-align:center;font-size:20px;font-weight:800;background:rgba(255,255,255,0.08);border:1px solid rgba(125,249,255,0.3);border-radius:9px;color:#7df9ff;width:100%;padding:8px;outline:none;font-family:inherit}
+.sh-field{width:100%;padding:10px;border-radius:9px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#f0e8ff;font-size:14px;font-family:inherit}
+select.sh-field option{background:#1a0b3d;color:#f0e8ff}
+.sh-note{font-size:11px;opacity:.55;margin-top:4px}
+.sh-done{width:100%;margin-top:18px;padding:13px;border-radius:10px;border:none;background:linear-gradient(90deg,#6a0dad,#ff69b4);color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+</style>
 </head>
 <body>
 <header>
@@ -81,30 +136,51 @@
 <main>
   <div class="stats">
     <div class="stat-box"><div class="stat-label">Shiny</div><div class="stat-val shiny" id="s-shiny">0</div></div>
-    <div class="stat-box"><div class="stat-label">Luxury Ball</div><div class="stat-val luxury" id="s-luxury">0</div></div>
-    <div class="stat-box"><div class="stat-label">Caught Wild</div><div class="stat-val wild" id="s-wild">0</div></div>
+    <div class="stat-box"><div class="stat-label">Luxury</div><div class="stat-val luxury" id="s-luxury">0</div></div>
+    <div class="stat-box"><div class="stat-label">Wild</div><div class="stat-val wild" id="s-wild">0</div></div>
+    <div class="stat-box"><div class="stat-label">Encounters</div><div class="stat-val enc" id="s-enc">0</div></div>
   </div>
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-fill" style="width:0%"></div></div>
-  <div class="sticky-controls">
-    <div class="controls">
-      <input type="text" id="search" placeholder="Search name or #…">
-      <div class="filter-group">
-        <button class="ftog" id="f-shiny">✨ Shiny <span class="state">—</span></button>
-        <button class="ftog" id="f-luxury">🔴 Luxury <span class="state">—</span></button>
-        <button class="ftog" id="f-wild">🟢 Wild <span class="state">—</span></button>
-        <button class="freset" id="f-reset">Reset</button>
-      </div>
+
+  <details class="tools">
+    <summary>⚙️ Backup &amp; settings</summary>
+    <div class="tools-body">
       <div class="io-btns">
         <button class="io-btn" id="btn-export">📤 Export progress</button>
         <button class="io-btn" id="btn-import">📥 Import progress</button>
-        <input type="file" id="import-input" accept=".json" style="display:none">
+        <input type="file" id="import-input" accept=".json,application/json" style="display:none">
       </div>
+      <label class="setting"><input type="checkbox" id="set-skipna"> Skip N/A entries in box numbering</label>
+      <div class="setting-note">Box labels assume 30 per box, in the order shown here (forms after #1025). Leave this off if you keep an empty slot for N/A Pokémon.</div>
     </div>
-    <div class="jumps" id="jumps"></div>
+  </details>
+
+  <div class="sticky-controls">
+    <div class="search-row">
+      <input type="text" id="search" placeholder="Search name or #…">
+      <button class="fcollapse" id="f-toggle">Filters ▾</button>
+    </div>
+    <div id="filter-block">
+      <div class="filter-group">
+        <button class="ftog" id="f-shiny"></button>
+        <button class="ftog" id="f-luxury"></button>
+        <button class="ftog" id="f-wild"></button>
+        <button class="ftog" id="f-hunting"></button>
+        <button class="ftog" id="f-na"></button>
+        <button class="ftog" id="f-recent">🕒 Recent shinies</button>
+        <button class="freset" id="f-reset">Reset</button>
+      </div>
+      <div class="jumps" id="jumps"></div>
+    </div>
   </div>
+
   <div id="list"></div>
+  <div class="empty" id="empty" style="display:none">No Pokémon match.</div>
 </main>
 <button id="top-btn" aria-label="Scroll to top">↑</button>
+
+<div id="sheet-bg"><div id="sheet"></div></div>
+
 <script>
 // ── BASE SPECIES (no alternate forms) ────────────────────────────────────────
 // [id, name, gen]
@@ -166,8 +242,7 @@ const FORMS=[
 [645,"Landorus","Other","Landorus (Therian)"],[646,"Kyurem","Other","Kyurem (White)"],
 [646,"Kyurem","Other","Kyurem (Black)"],[647,"Keldeo","Other","Keldeo (Resolute)"],
 [648,"Meloetta","Other","Meloetta (Pirouette)"],[718,"Zygarde","Other","Zygarde (Complete)"],
-[720,"Hoopa","Other","Hoopa Unbound"],[724,"Decidueye","Other","Decidueye (Hisuian — see Hisuian)"],
-[745,"Lycanroc","Other","Lycanroc (Midnight)"],[745,"Lycanroc","Other","Lycanroc (Dusk)"],
+[720,"Hoopa","Other","Hoopa Unbound"],[745,"Lycanroc","Other","Lycanroc (Midnight)"],[745,"Lycanroc","Other","Lycanroc (Dusk)"],
 [800,"Necrozma","Other","Necrozma (Dusk Mane)"],[800,"Necrozma","Other","Necrozma (Dawn Wings)"],
 [800,"Necrozma","Other","Necrozma (Ultra)"],[892,"Urshifu","Other","Urshifu (Rapid Strike)"],
 [898,"Calyrex","Other","Calyrex (Ice Rider)"],[898,"Calyrex","Other","Calyrex (Shadow Rider)"],
@@ -200,219 +275,417 @@ const formList=FORMS.map(r=>({
 
 const POKEMON=[...baseList,...formList];
 
+// ── STORAGE (same key as before, so existing ticks carry over) ───────────────
 const STORAGE_KEY="shiny-living-dex-v1";
+const UI_KEY="shiny-living-dex-ui";
+const METHODS=["Random","Masuda","Outbreak","Chain / Radar","Soft reset","Raid","Event / Gift","Trade","Other"];
+const DEFAULTS={shiny:false,luxury:false,wild:false,hunting:false,na:false,count:0,method:"",date:""};
+const BOX_SIZE=30;
+const $=id=>document.getElementById(id);
+const byKey={};
+POKEMON.forEach(p=>{byKey[p.key]=p;});
+
 let store={};
-try{const s=localStorage.getItem(STORAGE_KEY);if(s)store=JSON.parse(s);}catch{}
+try{const s=localStorage.getItem(STORAGE_KEY);if(s)store=JSON.parse(s)||{};}catch{}
+let settings={skipNA:false,filtersCollapsed:false};
+try{settings=Object.assign(settings,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch{}
+
 function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(store));}catch{}}
-function get(k){return store[k]||{shiny:false,luxury:false,wild:false};}
-function toggle(k,f){if(!store[k])store[k]={};store[k][f]=!store[k][f];save();}
+function saveSettings(){try{localStorage.setItem(UI_KEY,JSON.stringify(settings));}catch{}}
+function get(k){return Object.assign({},DEFAULTS,store[k]||{});}
+function setF(k,f,v){if(!store[k])store[k]={};store[k][f]=v;}
 
-// 0 = off, 1 = have, 2 = haven't
-let filters={shiny:0,luxury:0,wild:0},search="";
-const FTOG_CLS=["","have","havent"];
-const FTOG_LBL=["—","✓ Have","✗ Need"];
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad=n=>String(n).padStart(4,"0");
+const fmtNum=n=>Number(n||0).toLocaleString("en-GB");
+function todayISO(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function fmtDate(iso){if(!iso)return "";const [y,m,d]=iso.split("-");return `${d}/${m}/${y}`;}
 
-function updateStats(){
-  let sh=0,lx=0,wi=0;
-  POKEMON.forEach(p=>{const d=get(p.key);if(d.shiny)sh++;if(d.luxury)lx++;if(d.wild)wi++;});
-  document.getElementById("s-shiny").textContent=sh;
-  document.getElementById("s-luxury").textContent=lx;
-  document.getElementById("s-wild").textContent=wi;
-  const pct=Math.round(sh/POKEMON.length*100);
-  document.getElementById("prog-fill").style.width=pct+"%";
-  document.getElementById("header-tag").textContent=`${POKEMON.length} entries · ${sh} shiny (${pct}%)`;
+// ── BOX / SLOT LABELS ────────────────────────────────────────────────────────
+let boxIndex={};
+function computeBoxes(){
+  boxIndex={};let i=0;
+  POKEMON.forEach(p=>{
+    if(settings.skipNA&&get(p.key).na)return;
+    boxIndex[p.key]={box:Math.floor(i/BOX_SIZE)+1,slot:(i%BOX_SIZE)+1};
+    i++;
+  });
 }
 
-function matchFilter(p){
-  const d=get(p.key);
-  if(filters.shiny===1&&!d.shiny) return false;
-  if(filters.shiny===2&&d.shiny) return false;
-  if(filters.luxury===1&&!d.luxury) return false;
-  if(filters.luxury===2&&d.luxury) return false;
-  if(filters.wild===1&&!d.wild) return false;
-  if(filters.wild===2&&d.wild) return false;
+// ── STATS ────────────────────────────────────────────────────────────────────
+function genProgress(gen){
+  const inGen=baseList.filter(p=>p.gen===gen&&!get(p.key).na);
+  const got=inGen.filter(p=>get(p.key).shiny).length;
+  return {got,total:inGen.length,pct:inGen.length?Math.round(got/inGen.length*100):0};
+}
+function updateGenUI(){
+  for(let g=1;g<=9;g++){
+    const gp=genProgress(g);
+    const span=$("gp-"+g);if(span)span.textContent=`${gp.got}/${gp.total} (${gp.pct}%)`;
+    const btn=$("jump-gen-"+g);if(btn)btn.textContent=`G${g} ${gp.pct}%`;
+  }
+}
+function updateStats(){
+  let sh=0,lx=0,wi=0,enc=0,na=0;
+  POKEMON.forEach(p=>{
+    const d=get(p.key);
+    enc+=Number(d.count)||0;
+    if(d.na){na++;return;}
+    if(d.shiny)sh++;if(d.luxury)lx++;if(d.wild)wi++;
+  });
+  const tracked=POKEMON.length-na;
+  const pct=tracked?Math.round(sh/tracked*100):0;
+  $("s-shiny").textContent=sh;
+  $("s-luxury").textContent=lx;
+  $("s-wild").textContent=wi;
+  $("s-enc").textContent=fmtNum(enc);
+  $("prog-fill").style.width=pct+"%";
+  $("header-tag").textContent=`${tracked} entries · ${sh} shiny (${pct}%)`+(na?` · ${na} N/A`:"");
+  updateGenUI();
+}
+
+// ── FILTERS ──────────────────────────────────────────────────────────────────
+let filters={shiny:0,luxury:0,wild:0,hunting:0,na:0},search="",recentView=false;
+const FDEF={
+  shiny:{emoji:"✨",name:"Shiny",labels:["Any","Have","Need"]},
+  luxury:{emoji:"🔴",name:"Lux",labels:["Any","Have","Need"]},
+  wild:{emoji:"🟢",name:"Wild",labels:["Any","Have","Need"]},
+  hunting:{emoji:"🎯",name:"Hunt",labels:["Any","Yes","No"]},
+  na:{emoji:"🚫",name:"N/A",labels:["Show","Only","Hide"]}
+};
+function paintFilter(f){
+  const b=$("f-"+f),def=FDEF[f];
+  b.textContent=`${def.emoji} ${def.name}: ${def.labels[filters[f]]}`;
+  b.className="ftog"+(filters[f]===1?" have":filters[f]===2?" havent":"");
+}
+function paintRecent(){$("f-recent").className="ftog"+(recentView?" view-on":"");}
+
+// N/A entries can never be "needed", so the Need states skip them
+function matchFilter(d){
+  const f=filters;
+  if(f.shiny===1&&!d.shiny)return false;
+  if(f.shiny===2&&(d.shiny||d.na))return false;
+  if(f.luxury===1&&!d.luxury)return false;
+  if(f.luxury===2&&(d.luxury||d.na))return false;
+  if(f.wild===1&&!d.wild)return false;
+  if(f.wild===2&&(d.wild||d.na))return false;
+  if(f.hunting===1&&!d.hunting)return false;
+  if(f.hunting===2&&d.hunting)return false;
+  if(f.na===1&&!d.na)return false;
+  if(f.na===2&&d.na)return false;
   return true;
 }
+function textMatch(p,q){
+  return !q||p.name.toLowerCase().includes(q)||(p.form&&p.form.toLowerCase().includes(q))||String(p.id).includes(q);
+}
 
-function pad(n){return String(n).padStart(4,"0");}
-
+// ── CARDS ────────────────────────────────────────────────────────────────────
+let cardEls={};
+function cardHTML(p,d){
+  const bx=boxIndex[p.key];
+  const pills=[];
+  if(d.na)pills.push('<span class="pill">N/A</span>');
+  if(d.hunting)pills.push('<span class="pill hunt">🎯 hunting</span>');
+  if((Number(d.count)||0)>0)pills.push(`<span class="pill cnt">×${fmtNum(d.count)}</span>`);
+  if(d.shiny&&d.date)pills.push(`<span class="pill date">${fmtDate(d.date)}</span>`);
+  if(d.shiny&&d.method)pills.push(`<span class="pill">${esc(d.method)}</span>`);
+  const row=(f,cls,label,dis)=>`<div class="check-row${dis?" disabled":""}" data-act="${f}"><div class="box ${cls}${d[f]?" checked":""}">${d[f]?"✓":""}</div><span class="check-label">${label}</span></div>`;
+  return `<div class="card-top"><div><span class="card-num">#${pad(p.id)}</span>${bx?`<span class="card-box">B${bx.box}·${bx.slot}</span>`:""}</div><button class="more-btn" data-act="more" aria-label="Details">⋯</button></div>
+<div class="card-name">${esc(p.name)}${p.form?`<span class="form-tag">${esc(p.form)}</span>`:""}</div>
+${pills.length?`<div class="card-meta">${pills.join("")}</div>`:""}
+<div class="checks">
+${row("shiny","shiny-box","✨ Shiny",d.na)}${row("luxury","luxury-box","🔴 Luxury Ball",false)}${row("wild","wild-box","🟢 Caught Wild",false)}
+</div>
+${d.hunting?'<button class="quick-plus" data-act="plus">+1 encounter</button>':""}`;
+}
 function makeCard(p){
   const d=get(p.key);
   const card=document.createElement("div");
-  card.className="card"+(d.shiny?" has-shiny":"");
-  const displayName=p.form||p.name;
-  card.innerHTML=`<div class="card-num">#${pad(p.id)}</div>
-<div class="card-name">${p.form?p.name+' <span class="form-tag">'+p.form+'</span>':p.name}</div>
-<div class="checks">
-  <label class="check-row"><div class="box shiny-box${d.shiny?" checked":""}">${d.shiny?"✓":""}</div><span class="check-label">✨ Shiny</span></label>
-  <label class="check-row"><div class="box luxury-box${d.luxury?" checked":""}">${d.luxury?"✓":""}</div><span class="check-label">🔴 Luxury Ball</span></label>
-  <label class="check-row"><div class="box wild-box${d.wild?" checked":""}">${d.wild?"✓":""}</div><span class="check-label">🟢 Caught Wild</span></label>
-</div>`;
-  card.querySelectorAll(".check-row").forEach((row,i)=>{
-    const fields=["shiny","luxury","wild"];
-    row.addEventListener("click",e=>{
-      e.preventDefault();
-      toggle(p.key,fields[i]);
-      const nd=get(p.key);
-      const v=nd[fields[i]];
-      const box=row.querySelector(".box");
-      box.className="box "+["shiny-box","luxury-box","wild-box"][i]+(v?" checked":"");
-      box.textContent=v?"✓":"";
-      if(fields[i]==="shiny") card.className="card"+(v?" has-shiny":"");
-      updateStats();
-    });
-  });
+  card.className="card"+(d.shiny?" has-shiny":"")+(d.hunting?" hunting":"")+(d.na?" na":"");
+  card.dataset.key=p.key;
+  card.innerHTML=cardHTML(p,d);
+  cardEls[p.key]=card;
   return card;
 }
-
-function genProgress(gen){
-  const inGen=baseList.filter(p=>p.gen===gen);
-  const got=inGen.filter(p=>get(p.key).shiny).length;
-  return {got,total:inGen.length,pct:Math.round(got/inGen.length*100)};
+function refreshCard(key){
+  const old=cardEls[key];
+  if(!old||!old.isConnected)return;
+  old.replaceWith(makeCard(byKey[key]));
 }
-
-function sectionBreak(id,text,isForm,pctText){
+function sectionBreak(id,text,cls,extra){
   const div=document.createElement("div");
   div.className="full-row";
-  div.id=id;
+  if(id)div.id=id;
   const h=document.createElement("div");
-  h.className="section-header"+(isForm?" form-section":"");
+  h.className="section-header"+(cls?" "+cls:"");
   h.textContent=text;
-  if(pctText){
-    const span=document.createElement("span");
-    span.className="gen-pct";
-    span.textContent=pctText;
-    h.appendChild(span);
-  }
+  if(extra&&extra.pct){const s=document.createElement("span");s.className="gen-pct";if(extra.gen)s.id="gp-"+extra.gen;s.textContent=extra.pct;h.appendChild(s);}
   div.appendChild(h);
+  if(extra&&extra.note){const n=document.createElement("div");n.className="section-note";n.textContent=extra.note;div.appendChild(n);}
   return div;
 }
 
+// ── RENDER ───────────────────────────────────────────────────────────────────
 function render(){
-  const list=document.getElementById("list");
-  list.innerHTML="";
-  const q=search.toLowerCase();
+  const list=$("list");
+  list.innerHTML="";cardEls={};
+  const q=search.toLowerCase().trim();
   const frag=document.createDocumentFragment();
-  let visCount=0;
+  let vis=0;
 
-  // ── Base species by gen ──
-  let lastGen=null;
-  baseList.forEach(p=>{
-    const nameMatch=p.name.toLowerCase().includes(q)||String(p.id).includes(q);
-    if(!nameMatch||!matchFilter(p)) return;
-    visCount++;
-    if(p.gen!==lastGen){
-      const gp=genProgress(p.gen);
-      frag.appendChild(sectionBreak("gen-"+p.gen,`— Gen ${p.gen}: ${GEN_NAMES[p.gen]} —`,false,`${gp.got}/${gp.total} (${gp.pct}%)`));
-      lastGen=p.gen;
+  if(recentView){
+    const all=POKEMON.map(p=>[p,get(p.key)]).filter(([p,d])=>d.shiny&&textMatch(p,q));
+    const dated=all.filter(([,d])=>d.date).sort((a,b)=>b[1].date.localeCompare(a[1].date)||a[0].id-b[0].id);
+    const undated=all.length-dated.length;
+    frag.appendChild(sectionBreak("recent","🕒 Recent shinies ("+dated.length+")","hunt-section",
+      undated?{note:`${undated} shiny entr${undated===1?"y has":"ies have"} no date. Open ⋯ on a card to add one.`}:null));
+    dated.forEach(([p])=>{frag.appendChild(makeCard(p));vis++;});
+    if(!dated.length)vis=0;
+  }else{
+    // Pinned: currently hunting
+    const hunt=POKEMON.filter(p=>{const d=get(p.key);return d.hunting&&textMatch(p,q)&&matchFilter(d);});
+    if(hunt.length){
+      frag.appendChild(sectionBreak("hunting","🎯 Currently hunting ("+hunt.length+")","hunt-section"));
+      hunt.forEach(p=>{frag.appendChild(makeCard(p));vis++;});
     }
-    frag.appendChild(makeCard(p));
-  });
-
-  // ── Alternate forms by category ──
-  FORM_CATS.forEach(cat=>{
-    const catForms=formList.filter(p=>{
-      if(p.section!==cat) return false;
-      const nm=(p.name+" "+(p.form||"")).toLowerCase();
-      return nm.includes(q)||String(p.id).includes(q);
-    }).filter(p=>matchFilter(p));
-    if(catForms.length===0) return;
-    frag.appendChild(sectionBreak("form-"+cat, FORM_CAT_LABEL[cat], true));
-    catForms.forEach(p=>{ frag.appendChild(makeCard(p)); visCount++; });
-  });
-
-  list.appendChild(frag);
-  document.getElementById("empty").style.display=visCount===0?"block":"none";
-  updateStats();
-  refreshJumpLabels();
-}
-
-// ── Jump buttons ──
-const jumps=document.getElementById("jumps");
-function refreshJumpLabels(){
-  for(let g=1;g<=9;g++){
-    const btn=document.getElementById("jump-gen-"+g);
-    if(btn){ const gp=genProgress(g); btn.textContent=`G${g} ${gp.pct}%`; }
+    // Base species by generation
+    let lastGen=null;
+    baseList.forEach(p=>{
+      const d=get(p.key);
+      if(d.hunting)return;
+      if(!textMatch(p,q)||!matchFilter(d))return;
+      vis++;
+      if(p.gen!==lastGen){
+        const gp=genProgress(p.gen);
+        frag.appendChild(sectionBreak("gen-"+p.gen,`— Gen ${p.gen}: ${GEN_NAMES[p.gen]} —`,"",{gen:p.gen,pct:`${gp.got}/${gp.total} (${gp.pct}%)`}));
+        lastGen=p.gen;
+      }
+      frag.appendChild(makeCard(p));
+    });
+    // Alternate forms by category
+    FORM_CATS.forEach(cat=>{
+      const items=formList.filter(p=>{
+        if(p.section!==cat)return false;
+        const d=get(p.key);
+        return !d.hunting&&textMatch(p,q)&&matchFilter(d);
+      });
+      if(!items.length)return;
+      frag.appendChild(sectionBreak("form-"+cat,FORM_CAT_LABEL[cat],"form-section"));
+      items.forEach(p=>{frag.appendChild(makeCard(p));vis++;});
+    });
   }
+  list.appendChild(frag);
+  $("empty").style.display=vis===0?"block":"none";
+  updateStats();
 }
+function rerenderKeepScroll(){const y=window.scrollY;render();window.scrollTo(0,y);}
+
+// ── ACTIONS ──────────────────────────────────────────────────────────────────
+function toggleField(key,field,fromSheet){
+  const d=get(key);
+  let structural=false;
+  if(field==="shiny"){
+    if(d.na)return;
+    const now=!d.shiny;
+    setF(key,"shiny",now);
+    if(now){
+      if(!d.date)setF(key,"date",todayISO());
+      if(d.hunting){setF(key,"hunting",false);structural=true;}   // caught it, hunt over
+    }else setF(key,"date","");
+  }else if(field==="hunting"){
+    if(d.shiny||d.na)return;
+    setF(key,"hunting",!d.hunting);structural=true;
+  }else if(field==="na"){
+    if(d.shiny)return;
+    const now=!d.na;
+    setF(key,"na",now);
+    if(now)setF(key,"hunting",false);
+    structural=true;
+    computeBoxes();
+  }else{
+    setF(key,field,!d[field]);
+  }
+  save();updateStats();
+  if(structural&&!fromSheet){rerenderKeepScroll();return;}
+  if(structural&&fromSheet)sheetStructural=true;
+  refreshCard(key);
+}
+function addCount(key,n){
+  const d=get(key);
+  setF(key,"count",Math.max(0,(Number(d.count)||0)+n));
+  save();refreshCard(key);updateStats();
+}
+
+// ── DETAILS SHEET ────────────────────────────────────────────────────────────
+let sheetKey=null,sheetStructural=false;
+function openSheet(key){
+  sheetKey=key;sheetStructural=false;
+  renderSheet();
+  $("sheet-bg").classList.add("open");
+}
+function closeSheet(){
+  $("sheet-bg").classList.remove("open");
+  const redo=sheetStructural||recentView;
+  sheetKey=null;sheetStructural=false;
+  if(redo)rerenderKeepScroll();
+}
+function renderSheet(){
+  const p=byKey[sheetKey],d=get(sheetKey),bx=boxIndex[sheetKey];
+  const boxTxt=bx?`Box ${bx.box} · slot ${bx.slot}`:"No box slot (N/A skipped)";
+  const opts=['<option value="">— not set —</option>'].concat(METHODS.map(m=>`<option${d.method===m?" selected":""}>${esc(m)}</option>`)).join("");
+  $("sheet").innerHTML=`
+<div class="sh-head"><div><div class="sh-title">${esc(p.name)}${p.form?` <span class="form-tag">${esc(p.form)}</span>`:""}</div><div class="sh-sub">#${pad(p.id)} · ${boxTxt}</div></div><button class="sh-x" data-sact="close" aria-label="Close">✕</button></div>
+<div class="sh-grid">
+  <button class="tbtn${d.shiny?" on-shiny":""}" data-sact="shiny"${d.na?" disabled":""}>✨ Shiny</button>
+  <button class="tbtn${d.luxury?" on-lux":""}" data-sact="luxury">🔴 Luxury</button>
+  <button class="tbtn${d.wild?" on-wild":""}" data-sact="wild">🟢 Wild</button>
+</div>
+<div class="sh-grid2">
+  <button class="tbtn${d.hunting?" on-hunt":""}" data-sact="hunting"${d.shiny||d.na?" disabled":""}>🎯 Hunting</button>
+  <button class="tbtn${d.na?" on-na":""}" data-sact="na"${d.shiny?" disabled":""}>🚫 Can't be shiny</button>
+</div>
+${d.shiny?'<div class="sh-note">Shiny caught, so hunting and N/A are switched off.</div>':""}
+<div class="sh-label">Encounters</div>
+<div class="sh-counter"><button class="tbtn" data-sact="add" data-n="-1">−1</button><input id="sh-count" type="number" inputmode="numeric" min="0" value="${Number(d.count)||0}"><button class="tbtn" data-sact="add" data-n="1">+1</button></div>
+<div class="sh-counter2"><button class="tbtn" data-sact="add" data-n="10">+10</button><button class="tbtn" data-sact="add" data-n="100">+100</button></div>
+<div class="sh-label">Method</div>
+<select id="sh-method" class="sh-field">${opts}</select>
+<div class="sh-label">Date shiny caught</div>
+<input id="sh-date" type="date" class="sh-field" value="${esc(d.date)}"${d.shiny?"":" disabled"}>
+${d.shiny?"":'<div class="sh-note">Tick shiny first. The date fills in as today and you can change it.</div>'}
+<button class="sh-done" data-sact="close">Done</button>`;
+}
+$("sheet").addEventListener("click",e=>{
+  const b=e.target.closest("[data-sact]");
+  if(!b||b.disabled)return;
+  const a=b.dataset.sact;
+  if(a==="close"){closeSheet();return;}
+  if(a==="add"){addCount(sheetKey,Number(b.dataset.n));renderSheet();return;}
+  toggleField(sheetKey,a,true);
+  renderSheet();
+});
+$("sheet").addEventListener("change",e=>{
+  const t=e.target;
+  if(t.id==="sh-count"){
+    const v=Math.max(0,Math.floor(Number(t.value)||0));
+    setF(sheetKey,"count",v);t.value=v;
+  }else if(t.id==="sh-method"){
+    setF(sheetKey,"method",t.value);
+  }else if(t.id==="sh-date"){
+    setF(sheetKey,"date",t.value);
+  }else return;
+  save();refreshCard(sheetKey);updateStats();
+});
+$("sheet-bg").addEventListener("click",e=>{if(e.target.id==="sheet-bg")closeSheet();});
+
+// ── LIST EVENTS (one delegated handler for all cards) ────────────────────────
+$("list").addEventListener("click",e=>{
+  const card=e.target.closest(".card");
+  const act=e.target.closest("[data-act]");
+  if(!card||!act)return;
+  const key=card.dataset.key,a=act.dataset.act;
+  if(a==="more")openSheet(key);
+  else if(a==="plus")addCount(key,1);
+  else toggleField(key,a,false);
+});
+
+// ── CONTROLS ─────────────────────────────────────────────────────────────────
+const jumps=$("jumps");
 for(let g=1;g<=9;g++){
   const b=document.createElement("button");
   b.className="gj";b.id="jump-gen-"+g;b.textContent="Gen "+g;
-  b.addEventListener("click",()=>{ const el=document.getElementById("gen-"+g); if(el)el.scrollIntoView({behavior:"smooth",block:"start"}); });
+  b.addEventListener("click",()=>{const el=$("gen-"+g);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});});
   jumps.appendChild(b);
 }
 FORM_CATS.forEach(cat=>{
   const b=document.createElement("button");
-  b.className="gj form-jump";
-  b.textContent={Alolan:"Alolan",Galarian:"Galarian",Hisuian:"Hisuian",Paldean:"Paldean",Other:"Other"}[cat];
-  b.addEventListener("click",()=>{ const el=document.getElementById("form-"+cat); if(el)el.scrollIntoView({behavior:"smooth",block:"start"}); });
+  b.className="gj form-jump";b.textContent=cat;
+  b.addEventListener("click",()=>{const el=$("form-"+cat);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});});
   jumps.appendChild(b);
 });
 
-document.getElementById("search").addEventListener("input",e=>{search=e.target.value;render();});
+$("search").addEventListener("input",e=>{search=e.target.value;render();});
+Object.keys(FDEF).forEach(f=>{
+  paintFilter(f);
+  $("f-"+f).addEventListener("click",()=>{filters[f]=(filters[f]+1)%3;paintFilter(f);render();});
+});
+$("f-recent").addEventListener("click",()=>{recentView=!recentView;paintRecent();render();});
+$("f-reset").addEventListener("click",()=>{
+  Object.keys(filters).forEach(f=>{filters[f]=0;paintFilter(f);});
+  recentView=false;paintRecent();render();
+});
+function paintCollapse(){
+  $("filter-block").classList.toggle("collapsed",settings.filtersCollapsed);
+  $("f-toggle").textContent=settings.filtersCollapsed?"Filters ▸":"Filters ▾";
+}
+$("f-toggle").addEventListener("click",()=>{settings.filtersCollapsed=!settings.filtersCollapsed;saveSettings();paintCollapse();});
 
-// Filter toggles: cycle off → have → haven't → off
-["shiny","luxury","wild"].forEach(field=>{
-  document.getElementById("f-"+field).addEventListener("click",()=>{
-    filters[field]=(filters[field]+1)%3;
-    const btn=document.getElementById("f-"+field);
-    btn.className="ftog"+(filters[field]?" "+FTOG_CLS[filters[field]]:"");
-    btn.querySelector(".state").textContent=FTOG_LBL[filters[field]];
-    render();
-  });
+$("set-skipna").checked=!!settings.skipNA;
+$("set-skipna").addEventListener("change",e=>{
+  settings.skipNA=e.target.checked;saveSettings();computeBoxes();rerenderKeepScroll();
 });
 
-document.getElementById("f-reset").addEventListener("click",()=>{
-  filters={shiny:0,luxury:0,wild:0};
-  ["shiny","luxury","wild"].forEach(f=>{
-    const btn=document.getElementById("f-"+f);
-    btn.className="ftog";
-    btn.querySelector(".state").textContent="—";
-  });
-  render();
-});
-
-// Export progress
-document.getElementById("btn-export").addEventListener("click",()=>{
-  const blob=new Blob([JSON.stringify(store,null,2)],{type:"application/json"});
+// ── BACKUP ───────────────────────────────────────────────────────────────────
+$("btn-export").addEventListener("click",()=>{
+  const payload={app:"shiny-living-dex",version:2,exported:new Date().toISOString(),entries:store,settings:{skipNA:settings.skipNA}};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download="shiny-dex-progress.json";
+  a.download="shiny-dex-progress-"+todayISO()+".json";
   a.click();
 });
-
-// Import progress
-document.getElementById("btn-import").addEventListener("click",()=>{
-  document.getElementById("import-input").click();
-});
-document.getElementById("import-input").addEventListener("change",e=>{
+function sanitiseEntries(src){
+  const out={};
+  Object.keys(src).forEach(k=>{
+    if(!byKey[k]||!src[k]||typeof src[k]!=="object")return;
+    const s=src[k];
+    const e={
+      shiny:!!s.shiny,luxury:!!s.luxury,wild:!!s.wild,hunting:!!s.hunting,na:!!s.na,
+      count:Math.max(0,Math.floor(Number(s.count)||0)),
+      method:METHODS.includes(s.method)?s.method:"",
+      date:/^\d{4}-\d{2}-\d{2}$/.test(s.date||"")?s.date:""
+    };
+    if(e.shiny){e.na=false;e.hunting=false;}
+    if(e.na)e.hunting=false;
+    out[k]=e;
+  });
+  return out;
+}
+$("btn-import").addEventListener("click",()=>$("import-input").click());
+$("import-input").addEventListener("change",e=>{
   const file=e.target.files[0];
-  if(!file) return;
+  if(!file)return;
   const reader=new FileReader();
   reader.onload=ev=>{
     try{
       const parsed=JSON.parse(ev.target.result);
-      const ok=confirm("This will overwrite your current progress with the imported file. This can't be undone. Continue?");
-      if(!ok){ e.target.value=""; return; }
-      store=parsed;
-      save();
-      render();
-    }catch{alert("Couldn't read file — make sure it's a valid export.");}
+      const src=(parsed&&parsed.entries&&typeof parsed.entries==="object")?parsed.entries:parsed;
+      if(!src||typeof src!=="object"||Array.isArray(src))throw new Error("bad");
+      const clean=sanitiseEntries(src);
+      const incoming=Object.keys(clean).length;
+      if(!incoming){alert("That file has no recognisable progress in it, so nothing was changed.");return;}
+      const current=Object.keys(store).length;
+      if(!confirm(`This REPLACES your current progress (${current} entries with data) with the file (${incoming} entries). This can't be undone. Continue?`))return;
+      store=clean;
+      if(parsed.settings&&typeof parsed.settings.skipNA==="boolean"){settings.skipNA=parsed.settings.skipNA;saveSettings();$("set-skipna").checked=settings.skipNA;}
+      save();computeBoxes();render();
+    }catch{alert("Couldn't read that file. Make sure it's an export from this app.");}
   };
   reader.readAsText(file);
   e.target.value="";
 });
 
-// Jump-to-top button
-const topBtn=document.getElementById("top-btn");
-window.addEventListener("scroll",()=>{
-  if(window.scrollY>400) topBtn.classList.add("show");
-  else topBtn.classList.remove("show");
-});
-topBtn.addEventListener("click",()=>{ window.scrollTo({top:0,behavior:"smooth"}); });
+// ── TOP BUTTON, INIT ─────────────────────────────────────────────────────────
+const topBtn=$("top-btn");
+window.addEventListener("scroll",()=>{topBtn.classList.toggle("show",window.scrollY>400);});
+topBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
 
+paintCollapse();paintRecent();
+computeBoxes();
 render();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+
 </script>
 </body>
 </html>
