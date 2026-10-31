@@ -100,6 +100,15 @@ details.tools summary::-webkit-details-marker{display:none}
 #top-btn{position:fixed;bottom:18px;right:18px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6a0dad,#ff69b4);border:none;color:#fff;font-size:18px;box-shadow:0 4px 16px rgba(0,0,0,0.5);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:20}
 #top-btn.show{display:flex}
 
+.sprite{width:52px;height:52px;object-fit:contain;flex:0 0 auto;background:rgba(255,255,255,0.04);border-radius:8px}
+.sprite.broken,.sprite.none{visibility:hidden}
+.card-main{display:flex;gap:8px;align-items:center;margin-bottom:5px}
+.card-text{min-width:0;flex:1}
+.card-text .card-name{margin-bottom:3px}
+.card-text .card-meta{margin-bottom:0}
+.sh-id{display:flex;gap:10px;align-items:center;min-width:0}
+.sprite.sh-sprite{width:80px;height:80px}
+
 /* details sheet */
 #sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:none;align-items:flex-end;z-index:50}
 #sheet-bg.open{display:flex}
@@ -151,6 +160,7 @@ select.sh-field option{background:#1a0b3d;color:#f0e8ff}
         <input type="file" id="import-input" accept=".json,application/json" style="display:none">
       </div>
       <label class="setting"><input type="checkbox" id="set-skipna"> Skip N/A entries in box numbering</label>
+      <label class="setting"><input type="checkbox" id="set-images"> Show sprites (loaded from the web)</label>
       <div class="setting-note">Box labels assume 30 per box, in the order shown here (forms after #1025). Leave this off if you keep an empty slot for N/A Pokémon.</div>
     </div>
   </details>
@@ -239,16 +249,10 @@ const FORMS=[
 [479,"Rotom","Other","Rotom (Mow)"],[487,"Giratina","Other","Giratina (Origin)"],
 [492,"Shaymin","Other","Shaymin (Sky)"],[550,"Basculin","Other","Basculin (Blue-Striped)"],
 [641,"Tornadus","Other","Tornadus (Therian)"],[642,"Thundurus","Other","Thundurus (Therian)"],
-[645,"Landorus","Other","Landorus (Therian)"],[646,"Kyurem","Other","Kyurem (White)"],
-[646,"Kyurem","Other","Kyurem (Black)"],[647,"Keldeo","Other","Keldeo (Resolute)"],
-[648,"Meloetta","Other","Meloetta (Pirouette)"],[718,"Zygarde","Other","Zygarde (Complete)"],
-[720,"Hoopa","Other","Hoopa Unbound"],[745,"Lycanroc","Other","Lycanroc (Midnight)"],[745,"Lycanroc","Other","Lycanroc (Dusk)"],
-[800,"Necrozma","Other","Necrozma (Dusk Mane)"],[800,"Necrozma","Other","Necrozma (Dawn Wings)"],
-[800,"Necrozma","Other","Necrozma (Ultra)"],[892,"Urshifu","Other","Urshifu (Rapid Strike)"],
-[898,"Calyrex","Other","Calyrex (Ice Rider)"],[898,"Calyrex","Other","Calyrex (Shadow Rider)"],
+[645,"Landorus","Other","Landorus (Therian)"],[647,"Keldeo","Other","Keldeo (Resolute)"],
+[745,"Lycanroc","Other","Lycanroc (Midnight)"],[745,"Lycanroc","Other","Lycanroc (Dusk)"],
+[892,"Urshifu","Other","Urshifu (Rapid Strike)"],
 [905,"Enamorus","Other","Enamorus (Therian)"],[982,"Dudunsparce","Other","Dudunsparce (Three-Segment)"],
-[1017,"Ogerpon","Other","Ogerpon (Wellspring)"],[1017,"Ogerpon","Other","Ogerpon (Hearthflame)"],
-[1017,"Ogerpon","Other","Ogerpon (Cornerstone)"],[1024,"Terapagos","Other","Terapagos (Stellar)"]
 ];
 
 const FORM_CATS=["Alolan","Galarian","Hisuian","Paldean","Other"];
@@ -275,6 +279,24 @@ const formList=FORMS.map(r=>({
 
 const POKEMON=[...baseList,...formList];
 
+// ── SPRITES (hosted by PokéJungle, same scheme as the HOME organizer spreadsheet) ──
+const SPRITE_BASE="https://pokejungle.net/sprites/shiny/";
+const SPRITE_FORMS={"19-Alolan-AlolanRattata":"0019-1","20-Alolan-AlolanRaticate":"0020-1","26-Alolan-AlolanRaichu":"0026-1","27-Alolan-AlolanSandshrew":"0027-1","28-Alolan-AlolanSandslash":"0028-1","37-Alolan-AlolanVulpix":"0037-1","38-Alolan-AlolanNinetales":"0038-1","50-Alolan-AlolanDiglett":"0050-1","51-Alolan-AlolanDugtrio":"0051-1","52-Alolan-AlolanMeowth":"0052-1","53-Alolan-AlolanPersian":"0053-1","74-Alolan-AlolanGeodude":"0074-1","75-Alolan-AlolanGraveler":"0075-1","76-Alolan-AlolanGolem":"0076-1","88-Alolan-AlolanGrimer":"0088-1","89-Alolan-AlolanMuk":"0089-1","103-Alolan-AlolanExeggutor":"0103-1","105-Alolan-AlolanMarowak":"0105-1","52-Galarian-GalarianMeowth":"0052-2","77-Galarian-GalarianPonyta":"0077-1","78-Galarian-GalarianRapidash":"0078-1","79-Galarian-GalarianSlowpoke":"0079-1","80-Galarian-GalarianSlowbro":"0080-1","83-Galarian-GalarianFarfetch'd":"0083-1","110-Galarian-GalarianWeezing":"0110-1","122-Galarian-GalarianMrMime":"0122-1","144-Galarian-GalarianArticuno":"0144-1","145-Galarian-GalarianZapdos":"0145-1","146-Galarian-GalarianMoltres":"0146-1","199-Galarian-GalarianSlowking":"0199-1","222-Galarian-GalarianCorsola":"0222-1","263-Galarian-GalarianZigzagoon":"0263-1","264-Galarian-GalarianLinoone":"0264-1","554-Galarian-GalarianDarumaka":"0554-1","555-Galarian-GalarianDarmanitan":"0555-1","562-Galarian-GalarianYamask":"0562-1","618-Galarian-GalarianStunfisk":"0618-1","58-Hisuian-HisuianGrowlithe":"0058-1","59-Hisuian-HisuianArcanine":"0059-1","100-Hisuian-HisuianVoltorb":"0100-1","101-Hisuian-HisuianElectrode":"0101-1","157-Hisuian-HisuianTyphlosion":"0157-1","211-Hisuian-HisuianQwilfish":"0211-1","215-Hisuian-HisuianSneasel":"0215-1","503-Hisuian-HisuianSamurott":"0503-1","570-Hisuian-HisuianZorua":"0570-1","571-Hisuian-HisuianZoroark":"0571-1","628-Hisuian-HisuianBraviary":"0628-1","705-Hisuian-HisuianSliggoo":"0705-1","706-Hisuian-HisuianGoodra":"0706-1","713-Hisuian-HisuianAvalugg":"0713-1","724-Hisuian-HisuianDecidueye":"0724-1","128-Paldean-PaldeanTaurosCombat":"0128-1","128-Paldean-PaldeanTaurosBlaze":"0128-2","128-Paldean-PaldeanTaurosAqua":"0128-3","194-Paldean-PaldeanWooper":"0194-1","479-Other-RotomHeat":"0479-1","479-Other-RotomWash":"0479-2","479-Other-RotomFrost":"0479-3","479-Other-RotomFan":"0479-4","479-Other-RotomMow":"0479-5","487-Other-GiratinaOrigin":"0487-1","492-Other-ShayminSky":"0492-1","550-Other-BasculinBlue-Striped":"0550-1","641-Other-TornadusTherian":"0641-1","642-Other-ThundurusTherian":"0642-1","645-Other-LandorusTherian":"0645-1","647-Other-KeldeoResolute":"0647-1","745-Other-LycanrocMidnight":"0745-1","745-Other-LycanrocDusk":"0745-2","892-Other-UrshifuRapidStrike":"0892-1","905-Other-EnamorusTherian":"0905-1","549-Hisuian-HisuianLilligant":"0549-1","982-Other-DudunsparceThree-Segment":"0982-1"};
+function spriteUrl(p){
+  const stem=p.form?SPRITE_FORMS[p.key]:String(p.id).padStart(4,"0");
+  if(!stem)return "";
+  const nat=parseInt(stem.slice(0,4),10);
+  return SPRITE_BASE+stem+".png"+(nat>=1001&&nat<=1016?"?v=2":"");
+}
+function spriteImg(p,cls){
+  if(!settings.images)return "";
+  const u=spriteUrl(p);
+  return u?`<img class="${cls}" src="${u}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">`:`<div class="${cls} none"></div>`;
+}
+document.addEventListener("error",e=>{
+  if(e.target&&e.target.classList&&e.target.classList.contains("sprite"))e.target.classList.add("broken");
+},true);
+
 // ── STORAGE (same key as before, so existing ticks carry over) ───────────────
 const STORAGE_KEY="shiny-living-dex-v1";
 const UI_KEY="shiny-living-dex-ui";
@@ -287,7 +309,7 @@ POKEMON.forEach(p=>{byKey[p.key]=p;});
 
 let store={};
 try{const s=localStorage.getItem(STORAGE_KEY);if(s)store=JSON.parse(s)||{};}catch{}
-let settings={skipNA:false,filtersCollapsed:false};
+let settings={skipNA:false,filtersCollapsed:false,images:true};
 try{settings=Object.assign(settings,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch{}
 
 function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(store));}catch{}}
@@ -392,8 +414,8 @@ function cardHTML(p,d){
   if(d.shiny&&d.method)pills.push(`<span class="pill">${esc(d.method)}</span>`);
   const row=(f,cls,label,dis)=>`<div class="check-row${dis?" disabled":""}" data-act="${f}"><div class="box ${cls}${d[f]?" checked":""}">${d[f]?"✓":""}</div><span class="check-label">${label}</span></div>`;
   return `<div class="card-top"><div><span class="card-num">#${pad(p.id)}</span>${bx?`<span class="card-box">B${bx.box}·${bx.slot}</span>`:""}</div><button class="more-btn" data-act="more" aria-label="Details">⋯</button></div>
-<div class="card-name">${esc(p.name)}${p.form?`<span class="form-tag">${esc(p.form)}</span>`:""}</div>
-${pills.length?`<div class="card-meta">${pills.join("")}</div>`:""}
+<div class="card-main">${spriteImg(p,"sprite")}<div class="card-text"><div class="card-name">${esc(p.name)}${p.form?`<span class="form-tag">${esc(p.form)}</span>`:""}</div>
+${pills.length?`<div class="card-meta">${pills.join("")}</div>`:""}</div></div>
 <div class="checks">
 ${row("shiny","shiny-box","✨ Shiny",d.na)}${row("luxury","luxury-box","🔴 Luxury Ball",false)}${row("wild","wild-box","🟢 Caught Wild",false)}
 </div>
@@ -535,7 +557,7 @@ function renderSheet(){
   const boxTxt=bx?`Box ${bx.box} · slot ${bx.slot}`:"No box slot (N/A skipped)";
   const opts=['<option value="">— not set —</option>'].concat(METHODS.map(m=>`<option${d.method===m?" selected":""}>${esc(m)}</option>`)).join("");
   $("sheet").innerHTML=`
-<div class="sh-head"><div><div class="sh-title">${esc(p.name)}${p.form?` <span class="form-tag">${esc(p.form)}</span>`:""}</div><div class="sh-sub">#${pad(p.id)} · ${boxTxt}</div></div><button class="sh-x" data-sact="close" aria-label="Close">✕</button></div>
+<div class="sh-head"><div class="sh-id">${spriteImg(p,"sprite sh-sprite")}<div><div class="sh-title">${esc(p.name)}${p.form?` <span class="form-tag">${esc(p.form)}</span>`:""}</div><div class="sh-sub">#${pad(p.id)} · ${boxTxt}</div></div></div><button class="sh-x" data-sact="close" aria-label="Close">✕</button></div>
 <div class="sh-grid">
   <button class="tbtn${d.shiny?" on-shiny":""}" data-sact="shiny"${d.na?" disabled":""}>✨ Shiny</button>
   <button class="tbtn${d.luxury?" on-lux":""}" data-sact="luxury">🔴 Luxury</button>
@@ -622,13 +644,15 @@ function paintCollapse(){
 $("f-toggle").addEventListener("click",()=>{settings.filtersCollapsed=!settings.filtersCollapsed;saveSettings();paintCollapse();});
 
 $("set-skipna").checked=!!settings.skipNA;
+$("set-images").checked=!!settings.images;
+$("set-images").addEventListener("change",e=>{settings.images=e.target.checked;saveSettings();rerenderKeepScroll();});
 $("set-skipna").addEventListener("change",e=>{
   settings.skipNA=e.target.checked;saveSettings();computeBoxes();rerenderKeepScroll();
 });
 
 // ── BACKUP ───────────────────────────────────────────────────────────────────
 $("btn-export").addEventListener("click",()=>{
-  const payload={app:"shiny-living-dex",version:2,exported:new Date().toISOString(),entries:store,settings:{skipNA:settings.skipNA}};
+  const payload={app:"shiny-living-dex",version:2,exported:new Date().toISOString(),entries:store,settings:{skipNA:settings.skipNA,images:settings.images}};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
@@ -669,6 +693,7 @@ $("import-input").addEventListener("change",e=>{
       if(!confirm(`This REPLACES your current progress (${current} entries with data) with the file (${incoming} entries). This can't be undone. Continue?`))return;
       store=clean;
       if(parsed.settings&&typeof parsed.settings.skipNA==="boolean"){settings.skipNA=parsed.settings.skipNA;saveSettings();$("set-skipna").checked=settings.skipNA;}
+      if(parsed.settings&&typeof parsed.settings.images==="boolean"){settings.images=parsed.settings.images;saveSettings();$("set-images").checked=settings.images;}
       save();computeBoxes();render();
     }catch{alert("Couldn't read that file. Make sure it's an export from this app.");}
   };
