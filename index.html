@@ -152,6 +152,10 @@ select.sh-field option{background:#1a0b3d;color:#f0e8ff}
 .box.ot-box{border-color:#2e86c1}
 .box.ot-box.checked{background:rgba(52,152,219,0.25);color:#7fc4ff;border-color:#7fc4ff}
 .tbtn.on-ot{border-color:#7fc4ff;background:rgba(52,152,219,0.18);color:#7fc4ff;font-weight:700}
+.ball-pick{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11px;opacity:.9}
+.ball-pick span{flex:0 0 auto}
+.ball-sel{flex:1;min-width:0;padding:6px;border-radius:7px;border:1px solid rgba(255,190,80,0.35);background:rgba(255,255,255,0.07);color:#f0e8ff;font-size:12px;font-family:inherit}
+.ball-sel option{background:#1a0b3d}
 </style>
 </head>
 <body>
@@ -178,6 +182,8 @@ select.sh-field option{background:#1a0b3d;color:#f0e8ff}
         <button class="io-btn" id="btn-import">📥 Import progress</button>
         <input type="file" id="import-input" accept=".json,application/json" style="display:none">
       </div>
+      <label class="setting"><input type="checkbox" id="set-link"> Shiny ticks also mark the Normal dex as caught</label>
+      <div class="io-btns" style="margin-top:8px"><button class="io-btn" id="btn-sync">🔁 Copy existing shinies to Normal dex</button></div>
       <label class="setting"><input type="checkbox" id="set-games"> Show game badges on cards</label>
       <label class="setting"><input type="checkbox" id="set-skipna"> Skip N/A entries in box numbering</label>
       <label class="setting"><input type="checkbox" id="set-images"> Show sprites (loaded from the web)</label>
@@ -344,7 +350,7 @@ const SPRITE_FORMS={"19-Alolan-AlolanRattata":"0019-1","20-Alolan-AlolanRaticate
 function spriteUrl(p){
   const stem=p.form?SPRITE_FORMS[p.key]:String(p.id).padStart(4,"0");
   if(!stem)return "";
-  if(settings.sprite==="normal")return "https://pokejungle.net/sprites/normal/"+stem+".png";
+  if(!isShiny()||settings.sprite==="normal")return "https://pokejungle.net/sprites/normal/"+stem+".png";
   const nat=parseInt(stem.slice(0,4),10);
   return SPRITE_BASE+stem+".png"+(nat>=1001&&nat<=1016?"?v=2":"");
 }
@@ -373,7 +379,7 @@ const $=id=>document.getElementById(id);
 const byKey={};
 POKEMON.forEach(p=>{byKey[p.key]=p;});
 
-let settings={skipNA:false,filtersCollapsed:false,images:true,games:true,sprite:"shiny",mode:"shiny"};
+let settings={skipNA:false,filtersCollapsed:false,images:true,games:true,sprite:"shiny",mode:"shiny",linkShiny:false};
 try{settings=Object.assign(settings,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch{}
 if(settings.mode!=="normal")settings.mode="shiny";
 let mode=settings.mode;
@@ -511,8 +517,11 @@ function cardHTML(p,d){
   return `<div class="card-top"><div><span class="card-num">#${pad(p.id)}</span>${bx?`<span class="card-box">B${bx.box}·${bx.slot}</span>`:""}</div><button class="more-btn" data-act="more" aria-label="Details">⋯</button></div>
 <div class="card-main">${spriteImg(p,"sprite")}<div class="card-text"><div class="card-name">${esc(p.name)}${p.form?`<span class="form-tag">${esc(p.form)}</span>`:""}</div>
 ${pills.length?`<div class="card-meta">${pills.join("")}</div>`:""}</div></div>
-${gamesRow(p)}<div class="checks">${checks}</div>
+${gamesRow(p)}<div class="checks">${checks}</div>${sh?ballSelect(p,d):""}
 ${sh&&d.hunting?'<button class="quick-plus" data-act="plus">+1 encounter</button>':""}`;
+}
+function ballSelect(p,d){
+  return `<label class="ball-pick"><span>Target ball</span><select class="ball-sel" aria-label="Target ball">${BALLS.map(b=>`<option${d.ball===b?" selected":""}>${esc(b)}</option>`).join("")}</select></label>`;
 }
 function makeCard(p){
   const d=get(p.key);
@@ -607,6 +616,7 @@ function toggleField(key,field,fromSheet){
     const now=!d.shiny;
     setF(key,"shiny",now);
     if(now){
+      if(settings.linkShiny)markNormal(key,true);
       if(!d.date)setF(key,"date",todayISO());
       if(d.hunting){setF(key,"hunting",false);structural=true;}
     }else setF(key,"date","");
@@ -630,6 +640,11 @@ function toggleField(key,field,fromSheet){
     return;
   }
   refreshCard(key);
+}
+function markNormal(key,val){
+  let ns={};try{ns=JSON.parse(localStorage.getItem(KEYS.normal)||"{}")||{};}catch{}
+  ns[key]=Object.assign({},ns[key]||{},{caught:val});
+  try{localStorage.setItem(KEYS.normal,JSON.stringify(ns));}catch{}
 }
 function addCount(key,n){
   if(!isShiny())return;
@@ -707,6 +722,12 @@ $("sheet").addEventListener("change",e=>{
 $("sheet-bg").addEventListener("click",e=>{if(e.target.id==="sheet-bg")closeSheet();});
 
 // ── LIST EVENTS (one delegated handler) ──
+$("list").addEventListener("change",e=>{
+  if(!e.target.classList.contains("ball-sel"))return;
+  const key=e.target.closest(".card").dataset.key;
+  setF(key,"ball",BALLS.includes(e.target.value)?e.target.value:"Luxury Ball");
+  save();refreshCard(key);updateStats();
+});
 $("list").addEventListener("click",e=>{
   const card=e.target.closest(".card");
   const act=e.target.closest("[data-act]");
@@ -738,6 +759,7 @@ function paintModeUI(){
   ["f-luxury","f-wild","f-hunting","f-na","f-recent"].forEach(id=>{$(id).style.display=sh?"":"none";});
   $("mode-shiny").classList.toggle("on",sh);
   $("mode-normal").classList.toggle("on",!sh);
+  $("f-sprite").style.display=sh?"":"none";
   ["Shiny","Ball","Wild","Encounters"].forEach((t,i)=>{$("sl-"+(i+1)).textContent=sh?t:["Caught","Needed","My OT","Total"][i];});
   $("h-sub").textContent=sh?"National Pokédex · Gen 1–9":"National Pokédex · Gen 1–9 · Normal dex";
   $("h-title").textContent=sh?"✨ Shiny Living Dex":"📘 Living Dex";
@@ -833,6 +855,12 @@ function wire(){
   $("mode-shiny").addEventListener("click",()=>setMode("shiny"));
   $("mode-normal").addEventListener("click",()=>setMode("normal"));
 
+  $("set-link").checked=!!settings.linkShiny;
+  $("set-link").addEventListener("change",e=>{settings.linkShiny=e.target.checked;saveSettings();});
+  $("btn-sync").addEventListener("click",()=>{
+    let n=0;Object.keys(store).forEach(k=>{if(store[k]&&store[k].shiny){markNormal(k,true);n++;}});
+    alert(`Marked ${n} shiny Pokémon as caught in the Normal dex. Your shiny progress is unchanged.`);
+  });
   $("set-games").checked=!!settings.games;
   $("set-games").addEventListener("change",e=>{settings.games=e.target.checked;saveSettings();rerenderKeepScroll();});
   $("set-images").checked=!!settings.images;
