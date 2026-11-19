@@ -1,16 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1a0533"/>
-      <stop offset="100%" style="stop-color:#0a0018"/>
+      <stop offset="0%" style="stop-color:#4a00e0"/>
+      <stop offset="100%" style="stop-color:#0d1f3c"/>
+    </linearGradient>
+    <linearGradient id="top" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8e2de2"/>
+      <stop offset="100%" style="stop-color:#4a00e0"/>
+    </linearGradient>
+    <linearGradient id="bot" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00b4d8"/>
+      <stop offset="100%" style="stop-color:#7df9ff"/>
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="100" fill="url(#bg)"/>
-  <path d="M256 96 A160 160 0 0 1 416 256 L256 256Z" fill="#6a0dad"/>
-  <path d="M256 96 A160 160 0 0 0 96 256 L256 256Z" fill="#9b30d0"/>
-  <path d="M96 256 A160 160 0 0 0 416 256 L256 256Z" fill="#ff69b4" opacity=".85"/>
-  <rect x="86" y="244" width="340" height="24" rx="12" fill="#ffd700"/>
-  <circle cx="256" cy="256" r="36" fill="#0a0018" stroke="#ffd700" stroke-width="5"/>
-  <circle cx="256" cy="256" r="20" fill="#6a0dad"/>
-  <text x="256" y="261" text-anchor="middle" font-size="16" fill="#ffd700">✨</text>
+  <!-- Poké Ball top half -->
+  <path d="M 256 96 A 160 160 0 0 1 416 256 L 256 256 Z" fill="url(#top)"/>
+  <path d="M 256 96 A 160 160 0 0 0 96 256 L 256 256 Z" fill="url(#top)" opacity="0.7"/>
+  <!-- Poké Ball bottom half -->
+  <path d="M 96 256 A 160 160 0 0 0 416 256 L 256 256 Z" fill="url(#bot)" opacity="0.85"/>
+  <!-- Band -->
+  <rect x="86" y="244" width="340" height="24" rx="12" fill="#e8e0ff"/>
+  <!-- Centre button -->
+  <circle cx="256" cy="256" r="36" fill="#0f0c2e" stroke="#e8e0ff" stroke-width="6"/>
+  <circle cx="256" cy="256" r="20" fill="url(#top)"/>
 </svg>
