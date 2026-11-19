@@ -156,6 +156,9 @@ select.sh-field option{background:#1a0b3d;color:#f0e8ff}
 .ball-pick span{flex:0 0 auto}
 .ball-sel{flex:1;min-width:0;padding:6px;border-radius:7px;border:1px solid rgba(255,190,80,0.35);background:rgba(255,255,255,0.07);color:#f0e8ff;font-size:12px;font-family:inherit}
 .ball-sel option{background:#1a0b3d}
+.ball-global{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:9px 12px;border-radius:10px;background:rgba(255,190,80,0.08);border:1px solid rgba(255,190,80,0.25);font-size:13px}
+.ball-global span{flex:0 0 auto;font-weight:700;color:#ffd27f}
+.ball-global .ball-sel{flex:1;min-width:0;padding:8px;font-size:13px}
 </style>
 </head>
 <body>
@@ -174,6 +177,7 @@ select.sh-field option{background:#1a0b3d;color:#f0e8ff}
   </div>
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-fill" style="width:0%"></div></div>
 
+  <div class="ball-global" id="ball-global"><span>🎯 Target ball</span><select id="ball-main" class="ball-sel" aria-label="Target ball for the whole shiny dex"></select></div>
   <details class="tools">
     <summary>⚙️ Backup &amp; settings</summary>
     <div class="tools-body">
@@ -379,7 +383,7 @@ const $=id=>document.getElementById(id);
 const byKey={};
 POKEMON.forEach(p=>{byKey[p.key]=p;});
 
-let settings={skipNA:false,filtersCollapsed:false,images:true,games:true,sprite:"shiny",mode:"shiny",linkShiny:false};
+let settings={skipNA:false,filtersCollapsed:false,images:true,games:true,sprite:"shiny",mode:"shiny",linkShiny:false,targetBall:"Luxury Ball"};
 try{settings=Object.assign(settings,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch{}
 if(settings.mode!=="normal")settings.mode="shiny";
 let mode=settings.mode;
@@ -507,17 +511,16 @@ function cardHTML(p,d){
     if((Number(d.count)||0)>0)pills.push(`<span class="pill cnt">×${fmtNum(d.count)}</span>`);
     if(d.shiny&&d.date)pills.push(`<span class="pill date">${fmtDate(d.date)}</span>`);
     if(d.shiny&&d.method)pills.push(`<span class="pill">${esc(d.method)}</span>`);
-    if(d.luxury)pills.push(`<span class="pill ball">🎯 ${esc(d.ball)}</span>`);
   }
   if(d.ot)pills.push('<span class="pill ot">🧑 My OT</span>');
   const row=(f,cls,label,dis)=>`<div class="check-row${dis?" disabled":""}" data-act="${f}"><div class="box ${cls}${d[f]?" checked":""}">${d[f]?"✓":""}</div><span class="check-label">${label}</span></div>`;
   const checks=sh
-    ? row("shiny","shiny-box","✨ Shiny",d.na)+row("luxury","luxury-box",`🎯 Caught in ${esc(d.ball)}`,false)+row("wild","wild-box","🟢 Caught Wild",false)+row("ot","ot-box","🧑 My OT",false)
+    ? row("shiny","shiny-box","✨ Shiny",d.na)+row("luxury","luxury-box",`🎯 Caught in ${esc(settings.targetBall)}`,false)+row("wild","wild-box","🟢 Caught Wild",false)+row("ot","ot-box","🧑 My OT",false)
     : row("caught","shiny-box","📘 Caught",false)+row("ot","ot-box","🧑 My OT",false);
   return `<div class="card-top"><div><span class="card-num">#${pad(p.id)}</span>${bx?`<span class="card-box">B${bx.box}·${bx.slot}</span>`:""}</div><button class="more-btn" data-act="more" aria-label="Details">⋯</button></div>
 <div class="card-main">${spriteImg(p,"sprite")}<div class="card-text"><div class="card-name">${esc(p.name)}${p.form?`<span class="form-tag">${esc(p.form)}</span>`:""}</div>
 ${pills.length?`<div class="card-meta">${pills.join("")}</div>`:""}</div></div>
-${gamesRow(p)}<div class="checks">${checks}</div>${sh?ballSelect(p,d):""}
+${gamesRow(p)}<div class="checks">${checks}</div>
 ${sh&&d.hunting?'<button class="quick-plus" data-act="plus">+1 encounter</button>':""}`;
 }
 function ballSelect(p,d){
@@ -678,7 +681,7 @@ function renderSheet(){
   $("sheet").innerHTML=head+`
 <div class="sh-grid">
   <button class="tbtn${d.shiny?" on-shiny":""}" data-sact="shiny"${d.na?" disabled":""}>✨ Shiny</button>
-  <button class="tbtn${d.luxury?" on-lux":""}" data-sact="luxury">🎯 Caught in ${esc(d.ball)}</button>
+  <button class="tbtn${d.luxury?" on-lux":""}" data-sact="luxury">🎯 Caught in ${esc(settings.targetBall)}</button>
   <button class="tbtn${d.wild?" on-wild":""}" data-sact="wild">🟢 Caught Wild</button>
 </div>
 <div class="sh-grid2">
@@ -687,9 +690,6 @@ function renderSheet(){
 </div>
 <div class="sh-grid2"><button class="tbtn${d.ot?" on-ot":""}" data-sact="ot">🧑 My OT</button><span></span></div>
 ${d.shiny?'<div class="sh-note">Shiny caught, so hunting and N/A are switched off.</div>':""}
-<div class="sh-label">Target ball</div>
-<select id="sh-ball" class="sh-field">${ballOpts}</select>
-<div class="sh-note">Pick the ball you're aiming for. Tick "Caught in" once you've caught it in that ball.</div>
 <div class="sh-label">Encounters</div>
 <div class="sh-counter"><button class="tbtn" data-sact="add" data-n="-1">−1</button><input id="sh-count" type="number" inputmode="numeric" min="0" value="${Number(d.count)||0}"><button class="tbtn" data-sact="add" data-n="1">+1</button></div>
 <div class="sh-counter2"><button class="tbtn" data-sact="add" data-n="10">+10</button><button class="tbtn" data-sact="add" data-n="100">+100</button></div>
@@ -760,6 +760,7 @@ function paintModeUI(){
   $("mode-shiny").classList.toggle("on",sh);
   $("mode-normal").classList.toggle("on",!sh);
   $("f-sprite").style.display=sh?"":"none";
+  $("ball-global").style.display=sh?"":"none";
   ["Shiny","Ball","Wild","Encounters"].forEach((t,i)=>{$("sl-"+(i+1)).textContent=sh?t:["Caught","Needed","My OT","Total"][i];});
   $("h-sub").textContent=sh?"National Pokédex · Gen 1–9":"National Pokédex · Gen 1–9 · Normal dex";
   $("h-title").textContent=sh?"✨ Shiny Living Dex":"📘 Living Dex";
@@ -852,6 +853,9 @@ function wire(){
   $("f-toggle").addEventListener("click",()=>{settings.filtersCollapsed=!settings.filtersCollapsed;saveSettings();paintCollapse();});
   $("f-sprite").addEventListener("click",()=>{settings.sprite=settings.sprite==="normal"?"shiny":"normal";saveSettings();paintFilters();rerenderKeepScroll();});
 
+  const bm=$("ball-main");
+  bm.innerHTML=BALLS.map(b=>`<option${settings.targetBall===b?" selected":""}>${esc(b)}</option>`).join("");
+  bm.addEventListener("change",e=>{settings.targetBall=BALLS.includes(e.target.value)?e.target.value:"Luxury Ball";saveSettings();rerenderKeepScroll();});
   $("mode-shiny").addEventListener("click",()=>setMode("shiny"));
   $("mode-normal").addEventListener("click",()=>setMode("normal"));
 
@@ -869,7 +873,7 @@ function wire(){
   $("set-skipna").addEventListener("change",e=>{settings.skipNA=e.target.checked;saveSettings();computeBoxes();rerenderKeepScroll();});
 
   $("btn-export").addEventListener("click",()=>{
-    const payload={app:APPS[mode],version:3,mode,exported:new Date().toISOString(),entries:store,settings:{skipNA:settings.skipNA,images:settings.images,games:settings.games,sprite:settings.sprite}};
+    const payload={app:APPS[mode],version:3,mode,exported:new Date().toISOString(),entries:store,settings:{skipNA:settings.skipNA,images:settings.images,games:settings.games,sprite:settings.sprite,targetBall:settings.targetBall}};
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
     const a=document.createElement("a");
     a.href=URL.createObjectURL(blob);
@@ -902,6 +906,7 @@ function wire(){
         if(!confirm(`This REPLACES your current ${label} dex progress (${current} entries with data) with the file (${incoming} entries). This can't be undone. Continue?`))return;
         store=clean;
         if(parsed.settings&&typeof parsed.settings.skipNA==="boolean"){settings.skipNA=parsed.settings.skipNA;$("set-skipna").checked=settings.skipNA;}
+        if(parsed.settings&&BALLS.includes(parsed.settings.targetBall)){settings.targetBall=parsed.settings.targetBall;$("ball-main").value=settings.targetBall;}
         if(parsed.settings&&typeof parsed.settings.games==="boolean"){settings.games=parsed.settings.games;$("set-games").checked=settings.games;}
         if(parsed.settings&&(parsed.settings.sprite==="shiny"||parsed.settings.sprite==="normal"))settings.sprite=parsed.settings.sprite;
         if(parsed.settings&&typeof parsed.settings.images==="boolean"){settings.images=parsed.settings.images;$("set-images").checked=settings.images;}
