@@ -144,20 +144,29 @@ select.ftog option{background:#1a0b3d;color:#f0e8ff}
 select.sh-field option{background:#1a0b3d;color:#f0e8ff}
 .sh-note{font-size:11px;opacity:.55;margin-top:4px}
 .sh-done{width:100%;margin-top:18px;padding:13px;border-radius:10px;border:none;background:linear-gradient(90deg,#6a0dad,#ff69b4);color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+.mode-row{display:flex;gap:6px;margin-bottom:10px}
+.mode-btn{flex:1;padding:9px;border-radius:9px;border:1px solid rgba(255,105,180,0.25);background:rgba(255,255,255,0.06);color:#c0b0d8;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
+.mode-btn.on{background:linear-gradient(90deg,#6a0dad,#ff69b4);color:#fff;border-color:transparent}
+.pill.ball{color:#ffd27f;background:rgba(255,190,80,0.14)}
+.pill.ot{color:#9fd4ff;background:rgba(52,152,219,0.16)}
+.box.ot-box{border-color:#2e86c1}
+.box.ot-box.checked{background:rgba(52,152,219,0.25);color:#7fc4ff;border-color:#7fc4ff}
+.tbtn.on-ot{border-color:#7fc4ff;background:rgba(52,152,219,0.18);color:#7fc4ff;font-weight:700}
 </style>
 </head>
 <body>
 <header>
-  <div class="sub">National Pokédex · Gen 1–9</div>
-  <h1>✨ Shiny Living Dex</h1>
+  <div class="sub" id="h-sub">National Pokédex · Gen 1–9</div>
+  <h1 id="h-title">✨ Shiny Living Dex</h1>
   <div class="tag" id="header-tag">Loading…</div>
 </header>
 <main>
+  <div class="mode-row"><button class="mode-btn" id="mode-shiny">✨ Shiny dex</button><button class="mode-btn" id="mode-normal">📘 Normal dex</button></div>
   <div class="stats">
-    <div class="stat-box"><div class="stat-label">Shiny</div><div class="stat-val shiny" id="s-shiny">0</div></div>
-    <div class="stat-box"><div class="stat-label">Luxury</div><div class="stat-val luxury" id="s-luxury">0</div></div>
-    <div class="stat-box"><div class="stat-label">Wild</div><div class="stat-val wild" id="s-wild">0</div></div>
-    <div class="stat-box"><div class="stat-label">Encounters</div><div class="stat-val enc" id="s-enc">0</div></div>
+    <div class="stat-box"><div class="stat-label" id="sl-1">Shiny</div><div class="stat-val shiny" id="s-shiny">0</div></div>
+    <div class="stat-box"><div class="stat-label" id="sl-2">Ball</div><div class="stat-val luxury" id="s-luxury">0</div></div>
+    <div class="stat-box"><div class="stat-label" id="sl-3">Wild</div><div class="stat-val wild" id="s-wild">0</div></div>
+    <div class="stat-box"><div class="stat-label" id="sl-4">Encounters</div><div class="stat-val enc" id="s-enc">0</div></div>
   </div>
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-fill" style="width:0%"></div></div>
 
@@ -186,11 +195,12 @@ select.sh-field option{background:#1a0b3d;color:#f0e8ff}
         <button class="ftog" id="f-shiny"></button>
         <button class="ftog" id="f-luxury"></button>
         <button class="ftog" id="f-wild"></button>
+        <button class="ftog" id="f-ot"></button>
         <button class="ftog" id="f-hunting"></button>
         <button class="ftog" id="f-na"></button>
         <select class="ftog" id="f-game" aria-label="Filter by game"></select>
         <button class="ftog" id="f-sprite"></button>
-        <button class="ftog" id="f-recent">🕒 Recent shinies</button>
+        <button class="ftog" id="f-recent">🕒 Recent</button>
         <button class="freset" id="f-reset">Reset</button>
       </div>
       <div class="jumps" id="jumps"></div>
@@ -347,37 +357,48 @@ document.addEventListener("error",e=>{
   if(e.target&&e.target.classList&&e.target.classList.contains("sprite"))e.target.classList.add("broken");
 },true);
 
-// ── STORAGE (same key as before, so existing ticks carry over) ───────────────
-const STORAGE_KEY="shiny-living-dex-v1";
+// ── STORAGE ──
+// Two independent dexes, each with its own saved data:
+//   shiny  → "shiny-living-dex-v1" (unchanged, so existing ticks carry over)
+//   normal → "normal-living-dex-v1"
 const UI_KEY="shiny-living-dex-ui";
+const KEYS={shiny:"shiny-living-dex-v1",normal:"normal-living-dex-v1"};
+const APPS={shiny:"shiny-living-dex",normal:"normal-living-dex"};
+const BALLS=["Luxury Ball","Poké Ball","Great Ball","Ultra Ball","Premier Ball","Dive Ball","Quick Ball","Timer Ball","Repeat Ball","Nest Ball","Net Ball","Dusk Ball","Heal Ball","Cherish Ball","Master Ball","Other"];
 const METHODS=["Random","Masuda","Outbreak","Chain / Radar","Soft reset","Raid","Event / Gift","Trade","Other"];
-const DEFAULTS={shiny:false,luxury:false,wild:false,hunting:false,na:false,count:0,method:"",date:""};
+// "luxury" is stored as "caught in target ball" (old Luxury ticks carry over as Luxury Ball)
+const DEFAULTS={shiny:false,luxury:false,ball:"Luxury Ball",wild:false,hunting:false,na:false,count:0,method:"",date:"",ot:false,caught:false};
 const BOX_SIZE=30;
 const $=id=>document.getElementById(id);
 const byKey={};
 POKEMON.forEach(p=>{byKey[p.key]=p;});
 
-let store={};
-try{const s=localStorage.getItem(STORAGE_KEY);if(s)store=JSON.parse(s)||{};}catch{}
-let settings={skipNA:false,filtersCollapsed:false,images:true,games:true,sprite:"shiny"};
+let settings={skipNA:false,filtersCollapsed:false,images:true,games:true,sprite:"shiny",mode:"shiny"};
 try{settings=Object.assign(settings,JSON.parse(localStorage.getItem(UI_KEY)||"{}"));}catch{}
-
-function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(store));}catch{}}
+if(settings.mode!=="normal")settings.mode="shiny";
+let mode=settings.mode;
+let store={};
+function loadStore(m){store={};try{const s=localStorage.getItem(KEYS[m]);if(s)store=JSON.parse(s)||{};}catch{}}
+function save(){try{localStorage.setItem(KEYS[mode],JSON.stringify(store));}catch{}}
 function saveSettings(){try{localStorage.setItem(UI_KEY,JSON.stringify(settings));}catch{}}
 function get(k){return Object.assign({},DEFAULTS,store[k]||{});}
 function setF(k,f,v){if(!store[k])store[k]={};store[k][f]=v;}
+loadStore(mode);
+const isShiny=()=>mode==="shiny";
 
-// ── HELPERS ──────────────────────────────────────────────────────────────────
+// ── HELPERS ──
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pad=n=>String(n).padStart(4,"0");
 const fmtNum=n=>Number(n||0).toLocaleString("en-GB");
 function todayISO(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function fmtDate(iso){if(!iso)return "";const [y,m,d]=iso.split("-");return `${d}/${m}/${y}`;}
 
-// ── BOX / SLOT LABELS ────────────────────────────────────────────────────────
+// ── BOX / SLOT LABELS (shiny dex only) ──
 let boxIndex={};
 function computeBoxes(){
-  boxIndex={};let i=0;
+  boxIndex={};
+  if(!isShiny())return;
+  let i=0;
   POKEMON.forEach(p=>{
     if(settings.skipNA&&get(p.key).na)return;
     boxIndex[p.key]={box:Math.floor(i/BOX_SIZE)+1,slot:(i%BOX_SIZE)+1};
@@ -385,10 +406,11 @@ function computeBoxes(){
   });
 }
 
-// ── STATS ────────────────────────────────────────────────────────────────────
+// ── PROGRESS ──
+const isDone=d=>isShiny()?d.shiny:d.caught;
 function genProgress(gen){
-  const inGen=baseList.filter(p=>p.gen===gen&&!get(p.key).na);
-  const got=inGen.filter(p=>get(p.key).shiny).length;
+  const inGen=baseList.filter(p=>p.gen===gen&&!(isShiny()&&get(p.key).na));
+  const got=inGen.filter(p=>isDone(get(p.key))).length;
   return {got,total:inGen.length,pct:inGen.length?Math.round(got/inGen.length*100):0};
 }
 function updateGenUI(){
@@ -398,59 +420,44 @@ function updateGenUI(){
     const btn=$("jump-gen-"+g);if(btn)btn.textContent=`G${g} ${gp.pct}%`;
   }
 }
-function refreshGameCounts(){
-  const q=search.toLowerCase().trim(),c={none:0};
-  GAMES.forEach(g=>{c[g.id]=0;});
-  POKEMON.forEach(p=>{
-    const d=get(p.key);
-    if(!textMatch(p,q)||!matchFilter(d,p,true))return;
-    const a=availCodes(p);
-    GAMES.forEach((g,i)=>{if(a[i]!=="-")c[g.id]++;});
-    if(a==="-----")c.none++;
-  });
-  Array.from($("f-game").options).forEach(o=>{
-    if(!o.value)return;
-    const g=GAMES.find(x=>x.id===o.value);
-    o.textContent=(g?g.short:"None listed")+" ("+c[o.value]+")";
-  });
-}
+function setStat(a,b,c,d){$("s-shiny").textContent=a;$("s-luxury").textContent=b;$("s-wild").textContent=c;$("s-enc").textContent=d;}
 function updateStats(){
-  let sh=0,lx=0,wi=0,enc=0,na=0;
-  POKEMON.forEach(p=>{
-    const d=get(p.key);
-    enc+=Number(d.count)||0;
-    if(d.na){na++;return;}
-    if(d.shiny)sh++;if(d.luxury)lx++;if(d.wild)wi++;
-  });
-  const tracked=POKEMON.length-na;
-  const pct=tracked?Math.round(sh/tracked*100):0;
-  $("s-shiny").textContent=sh;
-  $("s-luxury").textContent=lx;
-  $("s-wild").textContent=wi;
-  $("s-enc").textContent=fmtNum(enc);
-  $("prog-fill").style.width=pct+"%";
-  $("header-tag").textContent=`${tracked} entries · ${sh} shiny (${pct}%)`+(na?` · ${na} N/A`:"");
+  if(isShiny()){
+    let sh=0,lx=0,wi=0,enc=0,na=0;
+    POKEMON.forEach(p=>{
+      const d=get(p.key);
+      enc+=Number(d.count)||0;
+      if(d.na){na++;return;}
+      if(d.shiny)sh++;
+      if(d.luxury)lx++;
+      if(d.wild)wi++;
+    });
+    const tracked=POKEMON.length-na;
+    const pct=tracked?Math.round(sh/tracked*100):0;
+    setStat(sh,lx,wi,fmtNum(enc));
+    $("prog-fill").style.width=pct+"%";
+    $("header-tag").textContent=`${tracked} entries · ${sh} shiny (${pct}%)`+(na?` · ${na} N/A`:"");
+  }else{
+    let c=0,ot=0;
+    POKEMON.forEach(p=>{const d=get(p.key);if(d.caught)c++;if(d.ot)ot++;});
+    const total=POKEMON.length,pct=Math.round(c/total*100);
+    setStat(c,total-c,ot,total);
+    $("prog-fill").style.width=pct+"%";
+    $("header-tag").textContent=`${total} entries · ${c} caught (${pct}%)`;
+  }
   updateGenUI();
   refreshGameCounts();
 }
 
-// ── FILTERS ──────────────────────────────────────────────────────────────────
-let filters={shiny:0,luxury:0,wild:0,hunting:0,na:0},search="",recentView=false,gameFilter="";
-const FDEF={
-  shiny:{emoji:"✨",name:"Shiny",labels:["Any","Have","Need"]},
-  luxury:{emoji:"🔴",name:"Lux",labels:["Any","Have","Need"]},
-  wild:{emoji:"🟢",name:"Wild",labels:["Any","Have","Need"]},
-  hunting:{emoji:"🎯",name:"Hunt",labels:["Any","Yes","No"]},
-  na:{emoji:"🚫",name:"N/A",labels:["Show","Only","Hide"]}
-};
-function paintFilter(f){
-  const b=$("f-"+f),def=FDEF[f];
-  b.textContent=`${def.emoji} ${def.name}: ${def.labels[filters[f]]}`;
-  b.className="ftog"+(filters[f]===1?" have":filters[f]===2?" havent":"");
+// ── FILTERS ──
+let filters={shiny:0,luxury:0,wild:0,hunting:0,na:0,ot:0},search="",recentView=false,gameFilter="";
+function filtersActive(){return Object.values(filters).some(v=>v)||!!gameFilter;}
+function resetFilters(){Object.keys(filters).forEach(f=>{filters[f]=0;});recentView=false;gameFilter="";}
+function filterLabel(f){
+  const names={shiny:isShiny()?"✨ Shiny":"📘 Caught",luxury:"🎯 Ball",wild:"🟢 Wild",hunting:"🔎 Hunt",na:"🚫 N/A",ot:"🧑 My OT"};
+  const opts={shiny:["Any","Have","Need"],luxury:["Any","Have","Need"],wild:["Any","Have","Need"],hunting:["Any","Yes","No"],na:["Show","Only","Hide"],ot:["Any","Yes","No"]};
+  return `${names[f]}: ${opts[f][filters[f]]}`;
 }
-function paintRecent(){$("f-recent").className="ftog"+(recentView?" view-on":"");}
-
-// N/A entries can never be "needed", so the Need states skip them
 function gameMatch(p){
   const s=availCodes(p);
   if(gameFilter==="none")return s==="-----";
@@ -459,46 +466,59 @@ function gameMatch(p){
 function matchFilter(d,p,skipGame){
   const f=filters;
   if(!skipGame&&gameFilter&&!gameMatch(p))return false;
-  if(f.shiny===1&&!d.shiny)return false;
-  if(f.shiny===2&&(d.shiny||d.na))return false;
-  if(f.luxury===1&&!d.luxury)return false;
-  if(f.luxury===2&&(d.luxury||d.na))return false;
-  if(f.wild===1&&!d.wild)return false;
-  if(f.wild===2&&(d.wild||d.na))return false;
-  if(f.hunting===1&&!d.hunting)return false;
-  if(f.hunting===2&&d.hunting)return false;
-  if(f.na===1&&!d.na)return false;
-  if(f.na===2&&d.na)return false;
+  if(!isShiny()){
+    if(f.shiny===1&&!d.caught)return false;
+    if(f.shiny===2&&d.caught)return false;
+  }else{
+    if(f.shiny===1&&!d.shiny)return false;
+    if(f.shiny===2&&(d.shiny||d.na))return false;
+    if(f.luxury===1&&!d.luxury)return false;
+    if(f.luxury===2&&(d.luxury||d.na))return false;
+    if(f.wild===1&&!d.wild)return false;
+    if(f.wild===2&&(d.wild||d.na))return false;
+    if(f.hunting===1&&!d.hunting)return false;
+    if(f.hunting===2&&d.hunting)return false;
+    if(f.na===1&&!d.na)return false;
+    if(f.na===2&&d.na)return false;
+  }
+  if(f.ot===1&&!d.ot)return false;
+  if(f.ot===2&&d.ot)return false;
   return true;
 }
 function textMatch(p,q){
   return !q||p.name.toLowerCase().includes(q)||(p.form&&p.form.toLowerCase().includes(q))||String(p.id).includes(q);
 }
 
-// ── CARDS ────────────────────────────────────────────────────────────────────
+// ── CARDS ──
 let cardEls={};
 function cardHTML(p,d){
-  const bx=boxIndex[p.key];
+  const sh=isShiny();
+  const bx=sh?boxIndex[p.key]:null;
   const pills=[];
-  if(d.na)pills.push('<span class="pill">N/A</span>');
-  const lk=zaLock(p); if(lk)pills.push(`<span class="pill lock">🔒 Z-A only</span>`);
-  if(d.hunting)pills.push('<span class="pill hunt">🎯 hunting</span>');
-  if((Number(d.count)||0)>0)pills.push(`<span class="pill cnt">×${fmtNum(d.count)}</span>`);
-  if(d.shiny&&d.date)pills.push(`<span class="pill date">${fmtDate(d.date)}</span>`);
-  if(d.shiny&&d.method)pills.push(`<span class="pill">${esc(d.method)}</span>`);
+  if(sh){
+    if(d.na)pills.push('<span class="pill">N/A</span>');
+    if(d.hunting)pills.push('<span class="pill hunt">🔎 hunting</span>');
+    if((Number(d.count)||0)>0)pills.push(`<span class="pill cnt">×${fmtNum(d.count)}</span>`);
+    if(d.shiny&&d.date)pills.push(`<span class="pill date">${fmtDate(d.date)}</span>`);
+    if(d.shiny&&d.method)pills.push(`<span class="pill">${esc(d.method)}</span>`);
+    if(d.luxury)pills.push(`<span class="pill ball">🎯 ${esc(d.ball)}</span>`);
+  }
+  if(d.ot)pills.push('<span class="pill ot">🧑 My OT</span>');
   const row=(f,cls,label,dis)=>`<div class="check-row${dis?" disabled":""}" data-act="${f}"><div class="box ${cls}${d[f]?" checked":""}">${d[f]?"✓":""}</div><span class="check-label">${label}</span></div>`;
+  const checks=sh
+    ? row("shiny","shiny-box","✨ Shiny",d.na)+row("luxury","luxury-box",`🎯 Caught in ${esc(d.ball)}`,false)+row("wild","wild-box","🟢 Caught Wild",false)+row("ot","ot-box","🧑 My OT",false)
+    : row("caught","shiny-box","📘 Caught",false)+row("ot","ot-box","🧑 My OT",false);
   return `<div class="card-top"><div><span class="card-num">#${pad(p.id)}</span>${bx?`<span class="card-box">B${bx.box}·${bx.slot}</span>`:""}</div><button class="more-btn" data-act="more" aria-label="Details">⋯</button></div>
 <div class="card-main">${spriteImg(p,"sprite")}<div class="card-text"><div class="card-name">${esc(p.name)}${p.form?`<span class="form-tag">${esc(p.form)}</span>`:""}</div>
 ${pills.length?`<div class="card-meta">${pills.join("")}</div>`:""}</div></div>
-${gamesRow(p)}<div class="checks">
-${row("shiny","shiny-box","✨ Shiny",d.na)}${row("luxury","luxury-box","🔴 Luxury Ball",false)}${row("wild","wild-box","🟢 Caught Wild",false)}
-</div>
-${d.hunting?'<button class="quick-plus" data-act="plus">+1 encounter</button>':""}`;
+${gamesRow(p)}<div class="checks">${checks}</div>
+${sh&&d.hunting?'<button class="quick-plus" data-act="plus">+1 encounter</button>':""}`;
 }
 function makeCard(p){
   const d=get(p.key);
   const card=document.createElement("div");
-  card.className="card"+(d.shiny?" has-shiny":"")+(d.hunting?" hunting":"")+(d.na?" na":"");
+  const sh=isShiny();
+  card.className="card"+((sh?d.shiny:d.caught)?" has-shiny":"")+(sh&&d.hunting?" hunting":"")+(sh&&d.na?" na":"");
   card.dataset.key=p.key;
   card.innerHTML=cardHTML(p,d);
   cardEls[p.key]=card;
@@ -522,34 +542,34 @@ function sectionBreak(id,text,cls,extra){
   return div;
 }
 
-// ── RENDER ───────────────────────────────────────────────────────────────────
+// ── RENDER ──
 function render(){
+  const sh=isShiny();
   const list=$("list");
   list.innerHTML="";cardEls={};
   const q=search.toLowerCase().trim();
   const frag=document.createDocumentFragment();
   let vis=0;
 
-  if(recentView){
+  if(sh&&recentView){
     const all=POKEMON.map(p=>[p,get(p.key)]).filter(([p,d])=>d.shiny&&textMatch(p,q));
     const dated=all.filter(([,d])=>d.date).sort((a,b)=>b[1].date.localeCompare(a[1].date)||a[0].id-b[0].id);
     const undated=all.length-dated.length;
     frag.appendChild(sectionBreak("recent","🕒 Recent shinies ("+dated.length+")","hunt-section",
       undated?{note:`${undated} shiny entr${undated===1?"y has":"ies have"} no date. Open ⋯ on a card to add one.`}:null));
     dated.forEach(([p])=>{frag.appendChild(makeCard(p));vis++;});
-    if(!dated.length)vis=0;
   }else{
-    // Pinned: currently hunting
-    const hunt=POKEMON.filter(p=>{const d=get(p.key);return d.hunting&&textMatch(p,q)&&matchFilter(d,p);});
-    if(hunt.length){
-      frag.appendChild(sectionBreak("hunting","🎯 Currently hunting ("+hunt.length+")","hunt-section"));
-      hunt.forEach(p=>{frag.appendChild(makeCard(p));vis++;});
+    if(sh){
+      const hunt=POKEMON.filter(p=>{const d=get(p.key);return d.hunting&&textMatch(p,q)&&matchFilter(d,p);});
+      if(hunt.length){
+        frag.appendChild(sectionBreak("hunting","🔎 Currently hunting ("+hunt.length+")","hunt-section"));
+        hunt.forEach(p=>{frag.appendChild(makeCard(p));vis++;});
+      }
     }
-    // Base species by generation
     let lastGen=null;
     baseList.forEach(p=>{
       const d=get(p.key);
-      if(d.hunting)return;
+      if(sh&&d.hunting)return;
       if(!textMatch(p,q)||!matchFilter(d,p))return;
       vis++;
       if(p.gen!==lastGen){
@@ -559,12 +579,11 @@ function render(){
       }
       frag.appendChild(makeCard(p));
     });
-    // Alternate forms by category
     FORM_CATS.forEach(cat=>{
       const items=formList.filter(p=>{
         if(p.section!==cat)return false;
         const d=get(p.key);
-        return !d.hunting&&textMatch(p,q)&&matchFilter(d,p);
+        return !(sh&&d.hunting)&&textMatch(p,q)&&matchFilter(d,p);
       });
       if(!items.length)return;
       frag.appendChild(sectionBreak("form-"+cat,FORM_CAT_LABEL[cat],"form-section"));
@@ -577,17 +596,19 @@ function render(){
 }
 function rerenderKeepScroll(){const y=window.scrollY;render();window.scrollTo(0,y);}
 
-// ── ACTIONS ──────────────────────────────────────────────────────────────────
+// ── ACTIONS ──
 function toggleField(key,field,fromSheet){
   const d=get(key);
   let structural=false;
-  if(field==="shiny"){
+  if(!isShiny()){
+    setF(key,field,!d[field]);
+  }else if(field==="shiny"){
     if(d.na)return;
     const now=!d.shiny;
     setF(key,"shiny",now);
     if(now){
       if(!d.date)setF(key,"date",todayISO());
-      if(d.hunting){setF(key,"hunting",false);structural=true;}   // caught it, hunt over
+      if(d.hunting){setF(key,"hunting",false);structural=true;}
     }else setF(key,"date","");
   }else if(field==="hunting"){
     if(d.shiny||d.na)return;
@@ -603,57 +624,66 @@ function toggleField(key,field,fromSheet){
     setF(key,field,!d[field]);
   }
   save();updateStats();
-  if(structural&&!fromSheet){rerenderKeepScroll();return;}
-  if(structural&&fromSheet)sheetStructural=true;
+  if(structural||filtersActive()){
+    if(fromSheet)sheetStructural=true;
+    else rerenderKeepScroll();
+    return;
+  }
   refreshCard(key);
 }
 function addCount(key,n){
+  if(!isShiny())return;
   const d=get(key);
   setF(key,"count",Math.max(0,(Number(d.count)||0)+n));
   save();refreshCard(key);updateStats();
 }
 
-// ── DETAILS SHEET ────────────────────────────────────────────────────────────
+// ── DETAILS SHEET ──
 let sheetKey=null,sheetStructural=false;
-function openSheet(key){
-  sheetKey=key;sheetStructural=false;
-  renderSheet();
-  $("sheet-bg").classList.add("open");
-}
+function openSheet(key){sheetKey=key;sheetStructural=false;renderSheet();$("sheet-bg").classList.add("open");}
 function closeSheet(){
   $("sheet-bg").classList.remove("open");
-  const redo=sheetStructural||recentView;
+  const redo=sheetStructural||recentView||filtersActive();
   sheetKey=null;sheetStructural=false;
   if(redo)rerenderKeepScroll();
 }
 function renderSheet(){
   const p=byKey[sheetKey],d=get(sheetKey),bx=boxIndex[sheetKey];
-  const boxTxt=bx?`Box ${bx.box} · slot ${bx.slot}`:"No box slot (N/A skipped)";
-  const opts=['<option value="">— not set —</option>'].concat(METHODS.map(m=>`<option${d.method===m?" selected":""}>${esc(m)}</option>`)).join("");
-  $("sheet").innerHTML=`
-<div class="sh-head"><div class="sh-id">${spriteImg(p,"sprite sh-sprite")}<div><div class="sh-title">${esc(p.name)}${p.form?` <span class="form-tag">${esc(p.form)}</span>`:""}</div><div class="sh-sub">#${pad(p.id)} · ${boxTxt}</div></div></div><button class="sh-x" data-sact="close" aria-label="Close">✕</button></div>
+  const subLine=`#${pad(p.id)}`+(isShiny()?" · "+(bx?`Box ${bx.box} · slot ${bx.slot}`:"No box slot (N/A skipped)"):"");
+  const head=`<div class="sh-head"><div class="sh-id">${spriteImg(p,"sprite sh-sprite")}<div><div class="sh-title">${esc(p.name)}${p.form?` <span class="form-tag">${esc(p.form)}</span>`:""}</div><div class="sh-sub">${subLine}</div></div></div><button class="sh-x" data-sact="close" aria-label="Close">✕</button></div>`;
+  const listed=`<div class="sh-label">Listed in</div>${gamesList(p)}<div class="sh-note">Taken from each game's Pokédex listing in the organizer spreadsheet. It's a guide, not a guarantee.</div>`;
+  if(!isShiny()){
+    $("sheet").innerHTML=head+
+      `<div class="sh-grid2"><button class="tbtn${d.caught?" on-shiny":""}" data-sact="caught">📘 Caught</button><button class="tbtn${d.ot?" on-ot":""}" data-sact="ot">🧑 My OT</button></div>`+
+      listed+`<button class="sh-done" data-sact="close">Done</button>`;
+    return;
+  }
+  const ballOpts=BALLS.map(b=>`<option${d.ball===b?" selected":""}>${esc(b)}</option>`).join("");
+  const methodOpts=['<option value="">— not set —</option>'].concat(METHODS.map(m=>`<option${d.method===m?" selected":""}>${esc(m)}</option>`)).join("");
+  $("sheet").innerHTML=head+`
 <div class="sh-grid">
   <button class="tbtn${d.shiny?" on-shiny":""}" data-sact="shiny"${d.na?" disabled":""}>✨ Shiny</button>
-  <button class="tbtn${d.luxury?" on-lux":""}" data-sact="luxury">🔴 Luxury</button>
-  <button class="tbtn${d.wild?" on-wild":""}" data-sact="wild">🟢 Wild</button>
+  <button class="tbtn${d.luxury?" on-lux":""}" data-sact="luxury">🎯 Caught in ${esc(d.ball)}</button>
+  <button class="tbtn${d.wild?" on-wild":""}" data-sact="wild">🟢 Caught Wild</button>
 </div>
 <div class="sh-grid2">
-  <button class="tbtn${d.hunting?" on-hunt":""}" data-sact="hunting"${d.shiny||d.na?" disabled":""}>🎯 Hunting</button>
+  <button class="tbtn${d.hunting?" on-hunt":""}" data-sact="hunting"${d.shiny||d.na?" disabled":""}>🔎 Hunting</button>
   <button class="tbtn${d.na?" on-na":""}" data-sact="na"${d.shiny?" disabled":""}>🚫 Can't be shiny</button>
 </div>
+<div class="sh-grid2"><button class="tbtn${d.ot?" on-ot":""}" data-sact="ot">🧑 My OT</button><span></span></div>
 ${d.shiny?'<div class="sh-note">Shiny caught, so hunting and N/A are switched off.</div>':""}
-${zaLock(p)?`<div class="sh-lock">🔒 Can't be shiny in Legends: Z-A (static encounter). Other games may still allow it, so ticking works as normal.</div>`:""}
+<div class="sh-label">Target ball</div>
+<select id="sh-ball" class="sh-field">${ballOpts}</select>
+<div class="sh-note">Pick the ball you're aiming for. Tick "Caught in" once you've caught it in that ball.</div>
 <div class="sh-label">Encounters</div>
 <div class="sh-counter"><button class="tbtn" data-sact="add" data-n="-1">−1</button><input id="sh-count" type="number" inputmode="numeric" min="0" value="${Number(d.count)||0}"><button class="tbtn" data-sact="add" data-n="1">+1</button></div>
 <div class="sh-counter2"><button class="tbtn" data-sact="add" data-n="10">+10</button><button class="tbtn" data-sact="add" data-n="100">+100</button></div>
 <div class="sh-label">Method</div>
-<select id="sh-method" class="sh-field">${opts}</select>
+<select id="sh-method" class="sh-field">${methodOpts}</select>
 <div class="sh-label">Date shiny caught</div>
 <input id="sh-date" type="date" class="sh-field" value="${esc(d.date)}"${d.shiny?"":" disabled"}>
 ${d.shiny?"":'<div class="sh-note">Tick shiny first. The date fills in as today and you can change it.</div>'}
-<div class="sh-label">Listed in</div>
-${gamesList(p)}
-<div class="sh-note">Taken from each game's Pokédex listing in the organizer spreadsheet. It's a guide, not a guarantee: BDSP lists almost every Gen 1–4 species (some only arrive via HOME), and legendaries or mythicals often show nothing.</div>
+${listed}
 <button class="sh-done" data-sact="close">Done</button>`;
 }
 $("sheet").addEventListener("click",e=>{
@@ -667,19 +697,16 @@ $("sheet").addEventListener("click",e=>{
 });
 $("sheet").addEventListener("change",e=>{
   const t=e.target;
-  if(t.id==="sh-count"){
-    const v=Math.max(0,Math.floor(Number(t.value)||0));
-    setF(sheetKey,"count",v);t.value=v;
-  }else if(t.id==="sh-method"){
-    setF(sheetKey,"method",t.value);
-  }else if(t.id==="sh-date"){
-    setF(sheetKey,"date",t.value);
-  }else return;
+  if(t.id==="sh-count"){const v=Math.max(0,Math.floor(Number(t.value)||0));setF(sheetKey,"count",v);t.value=v;}
+  else if(t.id==="sh-method"){setF(sheetKey,"method",t.value);}
+  else if(t.id==="sh-date"){setF(sheetKey,"date",t.value);}
+  else if(t.id==="sh-ball"){setF(sheetKey,"ball",BALLS.includes(t.value)?t.value:"Luxury Ball");}
+  else return;
   save();refreshCard(sheetKey);updateStats();
 });
 $("sheet-bg").addEventListener("click",e=>{if(e.target.id==="sheet-bg")closeSheet();});
 
-// ── LIST EVENTS (one delegated handler for all cards) ────────────────────────
+// ── LIST EVENTS (one delegated handler) ──
 $("list").addEventListener("click",e=>{
   const card=e.target.closest(".card");
   const act=e.target.closest("[data-act]");
@@ -690,63 +717,80 @@ $("list").addEventListener("click",e=>{
   else toggleField(key,a,false);
 });
 
-// ── CONTROLS ─────────────────────────────────────────────────────────────────
-const jumps=$("jumps");
-for(let g=1;g<=9;g++){
-  const b=document.createElement("button");
-  b.className="gj";b.id="jump-gen-"+g;b.textContent="Gen "+g;
-  b.addEventListener("click",()=>{const el=$("gen-"+g);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});});
-  jumps.appendChild(b);
+// ── FILTER / SETTINGS PAINTING ──
+function paintFilters(){
+  ["shiny","luxury","wild","hunting","na","ot"].forEach(f=>{
+    const b=$("f-"+f);if(!b)return;
+    b.textContent=filterLabel(f);
+    b.className="ftog"+(filters[f]===1?" have":filters[f]===2?" havent":"");
+  });
+  $("f-sprite").textContent=settings.sprite==="normal"?"🖼️ Sprites: Normal":"✨ Sprites: Shiny";
+  $("f-sprite").className="ftog"+(settings.sprite==="normal"?" view-on":"");
+  $("f-game").className="ftog"+(gameFilter?" have":"");
 }
-FORM_CATS.forEach(cat=>{
-  const b=document.createElement("button");
-  b.className="gj form-jump";b.textContent=cat;
-  b.addEventListener("click",()=>{const el=$("form-"+cat);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});});
-  jumps.appendChild(b);
-});
-
-$("search").addEventListener("input",e=>{search=e.target.value;render();});
-Object.keys(FDEF).forEach(f=>{
-  paintFilter(f);
-  $("f-"+f).addEventListener("click",()=>{filters[f]=(filters[f]+1)%3;paintFilter(f);render();});
-});
-$("f-recent").addEventListener("click",()=>{recentView=!recentView;paintRecent();render();});
-$("f-reset").addEventListener("click",()=>{
-  Object.keys(filters).forEach(f=>{filters[f]=0;paintFilter(f);});
-  recentView=false;paintRecent();gameFilter="";$("f-game").value="";$("f-game").className="ftog";render();
-});
+function paintRecent(){$("f-recent").className="ftog"+(recentView?" view-on":"");}
 function paintCollapse(){
   $("filter-block").classList.toggle("collapsed",settings.filtersCollapsed);
   $("f-toggle").textContent=settings.filtersCollapsed?"Filters ▸":"Filters ▾";
 }
-$("f-toggle").addEventListener("click",()=>{settings.filtersCollapsed=!settings.filtersCollapsed;saveSettings();paintCollapse();});
+function paintModeUI(){
+  const sh=isShiny();
+  ["f-luxury","f-wild","f-hunting","f-na","f-recent"].forEach(id=>{$(id).style.display=sh?"":"none";});
+  $("mode-shiny").classList.toggle("on",sh);
+  $("mode-normal").classList.toggle("on",!sh);
+  ["Shiny","Ball","Wild","Encounters"].forEach((t,i)=>{$("sl-"+(i+1)).textContent=sh?t:["Caught","Needed","My OT","Total"][i];});
+  $("h-sub").textContent=sh?"National Pokédex · Gen 1–9":"National Pokédex · Gen 1–9 · Normal dex";
+  $("h-title").textContent=sh?"✨ Shiny Living Dex":"📘 Living Dex";
+  document.body.dataset.mode=mode;
+}
+function paintAll(){paintModeUI();paintFilters();paintRecent();paintCollapse();render();}
+function setMode(m){
+  if(m===mode)return;
+  save();
+  mode=m;settings.mode=m;saveSettings();
+  loadStore(m);
+  resetFilters();
+  search="";$("search").value="";
+  $("f-game").value="";
+  computeBoxes();
+  paintAll();
+}
 
-$("set-skipna").checked=!!settings.skipNA;
-$("set-images").checked=!!settings.images;
-$("set-images").addEventListener("change",e=>{settings.images=e.target.checked;saveSettings();rerenderKeepScroll();});
-$("set-skipna").addEventListener("change",e=>{
-  settings.skipNA=e.target.checked;saveSettings();computeBoxes();rerenderKeepScroll();
-});
+function refreshGameCounts(){
+  const q=search.toLowerCase().trim();
+  const c={none:0};GAMES.forEach(g=>{c[g.id]=0;});
+  POKEMON.forEach(p=>{
+    const d=get(p.key);
+    if(!textMatch(p,q)||!matchFilter(d,p,true))return;
+    const a=availCodes(p);
+    GAMES.forEach((g,i)=>{if(a[i]!=="-")c[g.id]++;});
+    if(a==="-----")c.none++;
+  });
+  const sel=$("f-game");if(!sel)return;
+  Array.from(sel.options).forEach(o=>{
+    if(!o.value)return;
+    const g=GAMES.find(x=>x.id===o.value);
+    o.textContent=(g?g.short:"None listed")+" ("+c[o.value]+")";
+  });
+}
 
-// ── BACKUP ───────────────────────────────────────────────────────────────────
-$("btn-export").addEventListener("click",()=>{
-  const payload={app:"shiny-living-dex",version:2,exported:new Date().toISOString(),entries:store,settings:{skipNA:settings.skipNA,images:settings.images,games:settings.games,sprite:settings.sprite}};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="shiny-dex-progress-"+todayISO()+".json";
-  a.click();
-});
-function sanitiseEntries(src){
+// ── BACKUP (each dex exports and imports only its own data) ──
+function sanitiseEntries(src,m){
   const out={};
   Object.keys(src).forEach(k=>{
     if(!byKey[k]||!src[k]||typeof src[k]!=="object")return;
     const s=src[k];
+    if(m==="normal"){
+      const e={caught:!!s.caught,ot:!!s.ot};
+      if(e.caught||e.ot)out[k]=e;
+      return;
+    }
     const e={
-      shiny:!!s.shiny,luxury:!!s.luxury,wild:!!s.wild,hunting:!!s.hunting,na:!!s.na,
+      shiny:!!s.shiny,luxury:!!s.luxury,wild:!!s.wild,hunting:!!s.hunting,na:!!s.na,ot:!!s.ot,
       count:Math.max(0,Math.floor(Number(s.count)||0)),
       method:METHODS.includes(s.method)?s.method:"",
-      date:/^\d{4}-\d{2}-\d{2}$/.test(s.date||"")?s.date:""
+      date:/^\d{4}-\d{2}-\d{2}$/.test(s.date||"")?s.date:"",
+      ball:BALLS.includes(s.ball)?s.ball:"Luxury Ball"
     };
     if(e.shiny){e.na=false;e.hunting=false;}
     if(e.na)e.hunting=false;
@@ -754,53 +798,100 @@ function sanitiseEntries(src){
   });
   return out;
 }
-$("btn-import").addEventListener("click",()=>$("import-input").click());
-$("import-input").addEventListener("change",e=>{
-  const file=e.target.files[0];
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    try{
-      const parsed=JSON.parse(ev.target.result);
-      const src=(parsed&&parsed.entries&&typeof parsed.entries==="object")?parsed.entries:parsed;
-      if(!src||typeof src!=="object"||Array.isArray(src))throw new Error("bad");
-      const clean=sanitiseEntries(src);
-      const incoming=Object.keys(clean).length;
-      if(!incoming){alert("That file has no recognisable progress in it, so nothing was changed.");return;}
-      const current=Object.keys(store).length;
-      if(!confirm(`This REPLACES your current progress (${current} entries with data) with the file (${incoming} entries). This can't be undone. Continue?`))return;
-      store=clean;
-      if(parsed.settings&&typeof parsed.settings.skipNA==="boolean"){settings.skipNA=parsed.settings.skipNA;saveSettings();$("set-skipna").checked=settings.skipNA;}
-      if(parsed.settings&&typeof parsed.settings.games==="boolean"){settings.games=parsed.settings.games;saveSettings();$("set-games").checked=settings.games;}
-      if(parsed.settings&&(parsed.settings.sprite==="shiny"||parsed.settings.sprite==="normal")){settings.sprite=parsed.settings.sprite;saveSettings();paintSprite();}
-      if(parsed.settings&&typeof parsed.settings.images==="boolean"){settings.images=parsed.settings.images;saveSettings();$("set-images").checked=settings.images;}
-      save();computeBoxes();render();
-    }catch{alert("Couldn't read that file. Make sure it's an export from this app.");}
-  };
-  reader.readAsText(file);
-  e.target.value="";
-});
 
-// ── TOP BUTTON, INIT ─────────────────────────────────────────────────────────
-const topBtn=$("top-btn");
-window.addEventListener("scroll",()=>{topBtn.classList.toggle("show",window.scrollY>400);});
-topBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
-
-
-// Game filter + sprite toggle + badge setting
-(function(){
+// ── WIRE UP ──
+function wire(){
+  // game dropdown
   const sel=$("f-game");
   sel.innerHTML='<option value="">🎮 Game: Any</option>'+GAMES.map(g=>`<option value="${g.id}">${g.short}</option>`).join("")+'<option value="none">None listed</option>';
-  sel.addEventListener("change",e=>{gameFilter=e.target.value;sel.className="ftog"+(gameFilter?" have":"");render();});
-})();
-function paintSprite(){$("f-sprite").textContent=settings.sprite==="normal"?"🖼️ Sprites: Normal":"✨ Sprites: Shiny";$("f-sprite").className="ftog"+(settings.sprite==="normal"?" view-on":"");}
-$("f-sprite").addEventListener("click",()=>{settings.sprite=settings.sprite==="normal"?"shiny":"normal";saveSettings();paintSprite();rerenderKeepScroll();});
-$("set-games").checked=!!settings.games;
-$("set-games").addEventListener("change",e=>{settings.games=e.target.checked;saveSettings();rerenderKeepScroll();});
-paintSprite();
-paintCollapse();paintRecent();
+  sel.addEventListener("change",e=>{gameFilter=e.target.value;paintFilters();render();});
+
+  // gen and form jump buttons
+  const jumps=$("jumps");
+  for(let g=1;g<=9;g++){
+    const b=document.createElement("button");
+    b.className="gj";b.id="jump-gen-"+g;b.textContent="Gen "+g;
+    b.addEventListener("click",()=>{const el=$("gen-"+g);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});});
+    jumps.appendChild(b);
+  }
+  FORM_CATS.forEach(cat=>{
+    const b=document.createElement("button");
+    b.className="gj form-jump";b.textContent=cat;
+    b.addEventListener("click",()=>{const el=$("form-"+cat);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});});
+    jumps.appendChild(b);
+  });
+
+  $("search").addEventListener("input",e=>{search=e.target.value;render();});
+  ["shiny","luxury","wild","hunting","na","ot"].forEach(f=>{
+    $("f-"+f).addEventListener("click",()=>{filters[f]=(filters[f]+1)%3;paintFilters();render();});
+  });
+  $("f-recent").addEventListener("click",()=>{recentView=!recentView;paintRecent();render();});
+  $("f-reset").addEventListener("click",()=>{resetFilters();paintFilters();paintRecent();$("f-game").value="";render();});
+  $("f-toggle").addEventListener("click",()=>{settings.filtersCollapsed=!settings.filtersCollapsed;saveSettings();paintCollapse();});
+  $("f-sprite").addEventListener("click",()=>{settings.sprite=settings.sprite==="normal"?"shiny":"normal";saveSettings();paintFilters();rerenderKeepScroll();});
+
+  $("mode-shiny").addEventListener("click",()=>setMode("shiny"));
+  $("mode-normal").addEventListener("click",()=>setMode("normal"));
+
+  $("set-games").checked=!!settings.games;
+  $("set-games").addEventListener("change",e=>{settings.games=e.target.checked;saveSettings();rerenderKeepScroll();});
+  $("set-images").checked=!!settings.images;
+  $("set-images").addEventListener("change",e=>{settings.images=e.target.checked;saveSettings();rerenderKeepScroll();});
+  $("set-skipna").checked=!!settings.skipNA;
+  $("set-skipna").addEventListener("change",e=>{settings.skipNA=e.target.checked;saveSettings();computeBoxes();rerenderKeepScroll();});
+
+  $("btn-export").addEventListener("click",()=>{
+    const payload={app:APPS[mode],version:3,mode,exported:new Date().toISOString(),entries:store,settings:{skipNA:settings.skipNA,images:settings.images,games:settings.games,sprite:settings.sprite}};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=APPS[mode]+"-"+todayISO()+".json";
+    a.click();
+  });
+  $("btn-import").addEventListener("click",()=>$("import-input").click());
+  $("import-input").addEventListener("change",e=>{
+    const file=e.target.files[0];
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const parsed=JSON.parse(ev.target.result);
+        // files from before the switch had no "app" field; they were always shiny-dex files
+        const fileMode=parsed.app===APPS.normal?"normal":(parsed.app===APPS.shiny||!parsed.app)?"shiny":null;
+        if(!fileMode){alert("That file isn't a living dex export, so nothing was changed.");return;}
+        if(fileMode!==mode){
+          const other=fileMode==="normal"?"Normal":"Shiny";
+          alert(`That's a ${other} dex file. Switch to the ${other} dex to import it. Nothing was changed.`);
+          return;
+        }
+        const src=(parsed&&parsed.entries&&typeof parsed.entries==="object")?parsed.entries:parsed;
+        if(!src||typeof src!=="object"||Array.isArray(src))throw new Error("bad");
+        const clean=sanitiseEntries(src,mode);
+        const incoming=Object.keys(clean).length;
+        if(!incoming){alert("That file has no recognisable progress in it, so nothing was changed.");return;}
+        const current=Object.keys(store).length;
+        const label=isShiny()?"Shiny":"Normal";
+        if(!confirm(`This REPLACES your current ${label} dex progress (${current} entries with data) with the file (${incoming} entries). This can't be undone. Continue?`))return;
+        store=clean;
+        if(parsed.settings&&typeof parsed.settings.skipNA==="boolean"){settings.skipNA=parsed.settings.skipNA;$("set-skipna").checked=settings.skipNA;}
+        if(parsed.settings&&typeof parsed.settings.games==="boolean"){settings.games=parsed.settings.games;$("set-games").checked=settings.games;}
+        if(parsed.settings&&(parsed.settings.sprite==="shiny"||parsed.settings.sprite==="normal"))settings.sprite=parsed.settings.sprite;
+        if(parsed.settings&&typeof parsed.settings.images==="boolean"){settings.images=parsed.settings.images;$("set-images").checked=settings.images;}
+        saveSettings();save();computeBoxes();paintAll();
+      }catch{alert("Couldn't read that file. Make sure it's an export from this app.");}
+    };
+    reader.readAsText(file);
+    e.target.value="";
+  });
+
+  const topBtn=$("top-btn");
+  window.addEventListener("scroll",()=>{topBtn.classList.toggle("show",window.scrollY>400);});
+  topBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+}
+
+wire();
 computeBoxes();
-render();
+paintAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 
 </script>
