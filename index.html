@@ -159,16 +159,94 @@ select.sh-field option{background:#1a0b3d;color:#f0e8ff}
 .ball-global{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:9px 12px;border-radius:10px;background:rgba(255,190,80,0.08);border:1px solid rgba(255,190,80,0.25);font-size:13px}
 .ball-global span{flex:0 0 auto;font-weight:700;color:#ffd27f}
 .ball-global .ball-sel{flex:1;min-width:0;padding:8px;font-size:13px}
+
+/* ── Professional theme ── */
+:root{--bg:#0e1116;--panel:#151a22;--panel2:#1b212b;--line:#262d39;--text:#e6e9ef;--muted:#8a94a6;--accent:#4aa3df;--gold:#d9b44a;--red:#d46a64;--green:#6fbf8a}
+body{background:var(--bg)!important;color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;font-size:14px}
+header{background:var(--panel)!important;border-bottom:1px solid var(--line);box-shadow:none!important;padding:18px 16px 14px}
+.sub{color:var(--muted);letter-spacing:1.5px;font-size:10px;opacity:1}
+h1{text-shadow:none!important;font-size:20px;font-weight:600;letter-spacing:0;color:var(--text)}
+.tag{color:var(--muted);opacity:1}
+.mode-row{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;gap:3px}
+.mode-btn{border:none;background:transparent;color:var(--muted);border-radius:6px;font-weight:600;font-size:13px}
+.mode-btn.on{background:var(--panel2);color:var(--text);box-shadow:inset 0 0 0 1px var(--line)}
+.stat-box{background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.stat-label{color:var(--muted);letter-spacing:.8px;font-size:10px}
+.stat-val{font-weight:600;color:var(--text)}
+.stat-val.shiny{color:var(--gold)}
+.stat-val.luxury{color:var(--text)}
+.stat-val.wild{color:var(--green)}
+.stat-val.enc{color:var(--accent)}
+.progress-bar-wrap{background:var(--line);border-radius:4px;height:6px}
+.progress-bar-fill{background:var(--accent);border-radius:4px}
+.ball-global{background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--text)}
+.ball-global span{color:var(--muted);font-weight:600}
+.ball-sel,.sh-field{background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text)}
+details.tools{background:var(--panel);border:1px solid var(--line);border-radius:8px}
+details.tools summary{color:var(--muted)}
+.io-btn,.tbtn,.gj,.freset,.fcollapse,.sh-x,.more-btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:6px;font-family:inherit}
+.io-btn:active,.tbtn:active{background:#222a36}
+.sticky-controls{background:var(--bg);border-bottom:1px solid var(--line);box-shadow:none;padding:10px 12px}
+#search{background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text)}
+#search:focus{border-color:var(--accent);outline:none}
+.ftog{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:6px;font-size:12px}
+.ftog.have{border-color:var(--gold);color:var(--gold);background:rgba(217,180,74,.08)}
+.ftog.havent{border-color:var(--red);color:var(--red);background:rgba(212,106,100,.08)}
+.ftog.view-on{border-color:var(--accent);color:var(--accent);background:rgba(74,163,223,.08)}
+.gj{background:var(--panel);border:1px solid var(--line);color:var(--muted);font-size:11px}
+.gj.form-jump{color:var(--muted)}
+.section-header{color:var(--muted);font-size:11px;letter-spacing:1.2px;font-weight:600;text-transform:uppercase;opacity:1;border-bottom:1px solid var(--line);margin-top:6px}
+.section-header.form-section{color:var(--muted)}
+.section-header.hunt-section{color:var(--accent)}
+.gen-pct{color:var(--muted);text-transform:none;letter-spacing:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.card.has-shiny{border-color:rgba(217,180,74,.55);background:var(--panel)}
+.card.hunting{border-color:var(--accent)}
+.card-num{color:var(--muted);opacity:1;font-size:10px}
+.card-name{color:var(--text);font-weight:600}
+.form-tag,.pill{background:var(--panel2);color:var(--muted);border-radius:4px;border:1px solid var(--line)}
+.pill.cnt{color:var(--accent)}
+.pill.date{color:var(--gold)}
+.pill.hunt{color:var(--accent);background:rgba(74,163,223,.1)}
+.pill.ball,.pill.ot{color:var(--muted)}
+.pill.lock{color:var(--red)}
+.box{border-color:#3a4353;border-radius:4px}
+.shiny-box{border-color:#7a6424}
+.shiny-box.checked{background:rgba(217,180,74,.18);color:var(--gold);border-color:var(--gold)}
+.luxury-box{border-color:#5a6373}
+.luxury-box.checked{background:rgba(138,148,166,.18);color:var(--text);border-color:#8a94a6}
+.wild-box{border-color:#2f6a46}
+.wild-box.checked{background:rgba(111,191,138,.15);color:var(--green);border-color:var(--green)}
+.ot-box{border-color:#2f5f88}
+.ot-box.checked{background:rgba(74,163,223,.15);color:var(--accent);border-color:var(--accent)}
+.check-label{color:var(--muted);opacity:1;font-size:12px}
+.quick-plus{background:var(--panel2);border:1px solid var(--accent);color:var(--accent);border-radius:6px;font-weight:600}
+.quick-plus:active{background:#222a36}
+#top-btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);box-shadow:0 2px 10px rgba(0,0,0,.4)}
+#sheet{background:var(--panel);border-top:1px solid var(--line);box-shadow:none}
+.sh-title{font-weight:600}
+.sh-game{background:var(--panel2);border-radius:6px;color:var(--text)}
+.sh-note{color:var(--muted)}
+.sh-lock{background:rgba(212,106,100,.1);color:var(--red);border-radius:6px}
+.sh-done{background:var(--accent);color:#fff;border-radius:6px;font-weight:600}
+.tbtn.on-shiny{border-color:var(--gold);background:rgba(217,180,74,.12);color:var(--gold)}
+.tbtn.on-lux{border-color:#8a94a6;background:rgba(138,148,166,.14);color:var(--text)}
+.tbtn.on-wild{border-color:var(--green);background:rgba(111,191,138,.12);color:var(--green)}
+.tbtn.on-hunt{border-color:var(--accent);background:rgba(74,163,223,.12);color:var(--accent)}
+.tbtn.on-na{border-color:#8a94a6;background:rgba(138,148,166,.12);color:var(--text)}
+.tbtn.on-ot{border-color:var(--accent);background:rgba(74,163,223,.12);color:var(--accent)}
+.gchip{border-radius:4px;font-weight:600;letter-spacing:.3px}
+.empty{color:var(--muted);opacity:1}
 </style>
 </head>
 <body>
 <header>
   <div class="sub" id="h-sub">National Pokédex · Gen 1–9</div>
-  <h1 id="h-title">✨ Shiny Living Dex</h1>
+  <h1 id="h-title">Shiny Living Dex</h1>
   <div class="tag" id="header-tag">Loading…</div>
 </header>
 <main>
-  <div class="mode-row"><button class="mode-btn" id="mode-shiny">✨ Shiny dex</button><button class="mode-btn" id="mode-normal">📘 Normal dex</button></div>
+  <div class="mode-row"><button class="mode-btn" id="mode-shiny">Shiny dex</button><button class="mode-btn" id="mode-normal">Normal dex</button></div>
   <div class="stats">
     <div class="stat-box"><div class="stat-label" id="sl-1">Shiny</div><div class="stat-val shiny" id="s-shiny">0</div></div>
     <div class="stat-box"><div class="stat-label" id="sl-2">Ball</div><div class="stat-val luxury" id="s-luxury">0</div></div>
@@ -177,17 +255,17 @@ select.sh-field option{background:#1a0b3d;color:#f0e8ff}
   </div>
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-fill" style="width:0%"></div></div>
 
-  <div class="ball-global" id="ball-global"><span>🎯 Target ball</span><select id="ball-main" class="ball-sel" aria-label="Target ball for the whole shiny dex"></select></div>
+  <div class="ball-global" id="ball-global"><span>Target ball</span><select id="ball-main" class="ball-sel" aria-label="Target ball for the whole shiny dex"></select></div>
   <details class="tools">
-    <summary>⚙️ Backup &amp; settings</summary>
+    <summary>Backup &amp; settings</summary>
     <div class="tools-body">
       <div class="io-btns">
-        <button class="io-btn" id="btn-export">📤 Export progress</button>
-        <button class="io-btn" id="btn-import">📥 Import progress</button>
+        <button class="io-btn" id="btn-export">Export progress</button>
+        <button class="io-btn" id="btn-import">Import progress</button>
         <input type="file" id="import-input" accept=".json,application/json" style="display:none">
       </div>
       <label class="setting"><input type="checkbox" id="set-link"> Shiny ticks also mark the Normal dex as caught</label>
-      <div class="io-btns" style="margin-top:8px"><button class="io-btn" id="btn-sync">🔁 Copy existing shinies to Normal dex</button></div>
+      <div class="io-btns" style="margin-top:8px"><button class="io-btn" id="btn-sync">Copy existing shinies to Normal dex</button></div>
       <label class="setting"><input type="checkbox" id="set-games"> Show game badges on cards</label>
       <label class="setting"><input type="checkbox" id="set-skipna"> Skip N/A entries in box numbering</label>
       <label class="setting"><input type="checkbox" id="set-images"> Show sprites (loaded from the web)</label>
@@ -207,10 +285,8 @@ select.sh-field option{background:#1a0b3d;color:#f0e8ff}
         <button class="ftog" id="f-wild"></button>
         <button class="ftog" id="f-ot"></button>
         <button class="ftog" id="f-hunting"></button>
-        <button class="ftog" id="f-na"></button>
         <select class="ftog" id="f-game" aria-label="Filter by game"></select>
-        <button class="ftog" id="f-sprite"></button>
-        <button class="ftog" id="f-recent">🕒 Recent</button>
+        <button class="ftog" id="f-recent">Recent</button>
         <button class="freset" id="f-reset">Reset</button>
       </div>
       <div class="jumps" id="jumps"></div>
@@ -279,22 +355,20 @@ const FORMS=[
 // Other (notable formes with different shiny)
 [479,"Rotom","Other","Rotom (Heat)"],[479,"Rotom","Other","Rotom (Wash)"],
 [479,"Rotom","Other","Rotom (Frost)"],[479,"Rotom","Other","Rotom (Fan)"],
-[479,"Rotom","Other","Rotom (Mow)"],[487,"Giratina","Other","Giratina (Origin)"],
-[492,"Shaymin","Other","Shaymin (Sky)"],[550,"Basculin","Other","Basculin (Blue-Striped)"],
+[479,"Rotom","Other","Rotom (Mow)"],[550,"Basculin","Other","Basculin (Blue-Striped)"],
 [641,"Tornadus","Other","Tornadus (Therian)"],[642,"Thundurus","Other","Thundurus (Therian)"],
-[645,"Landorus","Other","Landorus (Therian)"],[647,"Keldeo","Other","Keldeo (Resolute)"],
-[745,"Lycanroc","Other","Lycanroc (Midnight)"],[745,"Lycanroc","Other","Lycanroc (Dusk)"],
+[645,"Landorus","Other","Landorus (Therian)"],[745,"Lycanroc","Other","Lycanroc (Midnight)"],[745,"Lycanroc","Other","Lycanroc (Dusk)"],
 [892,"Urshifu","Other","Urshifu (Rapid Strike)"],
 [905,"Enamorus","Other","Enamorus (Therian)"],[982,"Dudunsparce","Other","Dudunsparce (Three-Segment)"],
 ];
 
 const FORM_CATS=["Alolan","Galarian","Hisuian","Paldean","Other"];
 const FORM_CAT_LABEL={
-  "Alolan":"🌺 Alolan Forms",
-  "Galarian":"⚔️ Galarian Forms",
-  "Hisuian":"🌿 Hisuian Forms",
-  "Paldean":"🌙 Paldean Forms",
-  "Other":"🔄 Other Forms & Formes"
+  "Alolan":"Alolan Forms",
+  "Galarian":"Galarian Forms",
+  "Hisuian":"Hisuian Forms",
+  "Paldean":"Paldean Forms",
+  "Other":"Other Forms & Formes"
 };
 
 // Build POKEMON list: base species in dex order, then forms grouped by category
@@ -314,20 +388,24 @@ const POKEMON=[...baseList,...formList];
 
 // ── WHERE EACH POKÉMON IS LISTED (from the organizer spreadsheet's Dex tab) ──
 // One char per game, in order SwSh, BDSP, LA, SV, ZA. "-" = not listed.
-// SwSh: g Galar, a Isle of Armor, c Crown Tundra | SV: p Paldea, k Kitakami, b Blueberry | ZA: l Lumiose, h Hyperspace | BDSP/LA: x
-const AVAIL_BASE="ax-blax-blax-blgx-blgx-blgx-blax-blax-blax-blgx---gx---gx----x--l-x--l-x--l-x--l-x--l-x--l-x----x----x----x----x-kl-x-klgxxplgxxplax-k-ax-k-cx---cx---cx---cx---cx---cx---gxxklgxxklgxxk-gxxk-ax-phax-phcxx-hcxx-hgx-b-gx-b-gx-b--xx---xx---x-p--x-p-gx-p-gx-p-gx-phgx-phaxxp-axxp--x-ph-x-phgx-p-gx-p-ax-k-ax-k-ax-k-axx-laxx-laxx-lgxx-lgxx-lgxx-l-x-kl-x-kl-x-klaxxb-axxb--xxk--xxk--xxk-gxx--gxx--ax-plax-plaxxp-axxp-gx--h-x-b--x-b--x-b--x-b--x-p--x-p-gx-p-gx-p-gxxplgxxplgxxplgxx-l-x-p--x-p-gx---gx----x-p--x-p-ax-b-ax-b-ax--hax--hgx-b-gx-b-axx--gx-k-gx-k-gxxb-gxxb-axxp-axx--ax--lax-b-ax-b-gx---gx---ax--lax--lcxx-haxxplcx---cxxb-cxxb-ax--lax-p-gxxplgxxplgx-b-gx-p-gxxplgxxplgxxplgxxplaxxbhcx---cx---cx---cx---cx--lgxxk-cx---cx---cx---cx-plcx-plcx-pl-x----x----x-bl-x-bl-x-bl-xxb--xxb--x-b--x-bl-x-bl-x-bl-x-k--x-k-gx-k-gx-k--x----x----x-kl-x-klcxx-hgx-b-gx-b-gxxplgxxklax-phgxx--gxx--gx---gx----x-pl-x-pl-x-plgx-b-ax-p-ax-p-gxxp-ax-k--x-p--x-p--x-p--xxk--x-p--x-p--xxk-gx-p-gx-k-gxxplgxxpl-xxp-ax-pl-xxp--xx--gx----x-p--x-p--x-p-ax-p--xxk-gxx-l-x-b--x-b-gx-phaxxplgx---axxplgx-p--xxp--xxp--x-k--x-k-gxxk-gxxk-gx---gxx--gxx--gx-plgxx--ax-bl-x-pl-x-plax-b--x-p--x-p-axxbh-xxp--x-b-gx-b-gx-b-cx---cxxb-cxxb-ax---axxp--x----x----x---gx-plgx-plgx-pl-x----x---------x-bh-x-bh-x-bh-x-bh-x-bh-x-bh-x-bh-x-bh-x-bh-x-k--x-k-gx---gx----xx---xx---xx---xx---xx--gx-k-gx-k-gx-k-gx-k-gx-k-gx-k--x----x---gx-p-gx-p-gxxplgxxplgxxpl-x-p--x-p--x-p--x-p--x-p--x-p--x-p-gx---gx---gx---ax---ax---ax----x-p--x-p-ax-p--xxk--x----x---gx-plgx--lcx--lcx--lcx--l-x-pl-x-plgx--lgx--l-x-b--x-b--x-k--x-k-gxx-l-x-ph-x-phax--lax--lgx---gx----x-pl-x-plgx-p--x-ph-x-ph-x---gx-b-gx-b-gx-b--x-p--x-p-cx-plcx-pl-x-ph-x-phgx---gx---gxxp-gxxp-gx-k-gx-k-gx---gx---cx---cx---cx---cx---gx-khgx-kh-x----x--h-x-pl-x-plgxxk-gxxk--x-p--xxkhcx--lgx---gxxplgxxplcxx--cxx--cxx---x----x----x---cx----x-p-cx-plcx-plcx-plcx-blcx-blcx-blcx---cx---cx----x--h-x--h-x--h-x--h-x--h-x----x----xxb--xxb--xxb--xxb--xxb--xxb--xxb--xxb--xxb--xxph-xxph-xxph-xx---xx---xxp--xxp-axxp-axxp-axxp-gxx-lgxx-l-xxb--xxb--xxb--xxb--xx---xx---xx--gxxp-gxxp--xxp--xxp--xxp-gxx--gxx--gxxp-gxxp--xxk-gxxp-gxxp-axx-laxx-l-xxp--xxp--xx---xx---xxkhgxxp-gxxp-gxxp-gxxp-gxxp-cxx-haxxp--xx--cxxp-cxxplcxxplcxxplgxxk-gxxplgxxplgxxplgxxplgxx--gxx--gxxp-gxxp--xx---xxp--xxp-gxx--gxxplgxxplgxxp-axxp-axx--gxxb-axx--cxxb-cxxb-gxx---xxk-gxxplgxxpl-xxk-gxxk-axxbhgxxpl-xxk-gxxk-gxxplgxxph-xx---xx---xx---xx---xx---xx-h-xx---xx---xx---xx---xx---xx-h-xx---xx----------b----b----b----bl---bl---bl--xb---xb----b-----l----la----a----a----g---hg---h----l----l----l----l----l----lg---hg---hg----g----g-------b----b-g----g----g----g----g----g--blg--blc---lg--k-g--k-g--k-g----g----g----g---hg---h---k----k----k-a---la---la---lg--b-g--b-a-xp-a--p-g--p-a--pla--pla--plg----g----g----g----g----g--blg--blg----g---hg---hc----c----c----c----g---lg---la--p-a--p-g--b-g--b-g--p-g--p-g--p-g--b-g--b-g--b----k----k-g---lg---lg---l---p----p-a---lg----g----a--pha--phg----g-------p-g--b-g--b-g----g----g----g----g-------pl---pl---plg----g----g--klg--klg--klg--p-g--p-g--p-g--p-g--p-c--phg----g----g---la--k-a--k-a----g--bhg--bhg--p-g--p-a----g-xp-g--p-g--k-g--k-g----g----g--p-g--p-g--p-a--p-a--p-c---hc---hc---h--x----x--------------x-----------h----h----h---bl---bl---bl---bl---bl---bl---bl---bl---blg---lg---la--pla--pla--pl---pl---pl---pl---pl---pl---pl---pl---pl---pl---plg---lg---l----lg--blg--blg---lg---lg---lg---lg---lg---lg---lg--blg--blg---lg---la--pla--pla--pla--plg---lg---lc---lc---lc---lc---lg-xplg--pla--plc--klg-xplg--plg--pla--plg--klg--klg---lg---lg-xplg--plg--plg--pl----l----l----l---------h----h--xb---xb----b----b----b----b----b----b----b----b----b----b----p----p-g--k-g--k-g--k----ph---ph---p-g--k-g--k-a--p-a--p-g----g--p-g--p-g--p-g--p-g--b-g--b-a--p-a--p-g----g----g--p-g--p-g----g----g--p-g--p-g--p-a--b-g--p-g--p-g---hg---ha--pha--phg---------g-------b----p-g----g----g--ph---p-g---lg----g--k-g--k-g--k-------------------------------------------------------------------------------------h----h------------------------h----h----hg--b-g--b-g--b-g--b-g--b-g--b-g--b-g--b-g--b-g--p-g--p-g--phg--phg--phg----g----g----g---hg---hg----g----g----g----g--p-g--p-g----g----g--p-g--p-g--p-g--p-g--p-g--p-g--p-g--p-g--k-g--p-g--p-g--phg--phg----g----g---hg---hg--p-g--p-g--p-g--p-g--p-g--p-g--p-g--p-g----g---hg----g---hc---hg---hg--b-g--b-g--plg--p-g--p-g--p-g--p-g--p-g--phg--khg--p-g--p-g----g----g----g----g--b-g--p-g--p-g--p-g----g----g----a----a----a----c----c----c----c----c------x----xbh--xk---xk---x----xbh--x-----p----p----p----p----p----p----p----p----p----p----p----p----p----p----p----p----p----p----p----p----ph---ph---p----p----p----ph---ph---ph---ph---ph---ph---ph---p----p----p----p----ph---ph---ph---ph---p----p----p----p----p----ph---ph---p----p----p----p----ph---ph---ph---p----p----p----p----p----p----p----ph---p----ph---ph---ph---ph---ph---p----p----p----ph---ph---ph---p----p----p----p----p----p----p----p----p----p----p----p----p----p----p----p----ph---ph---ph---ph---ph---p----p----p----p----p----p----p----p----b----b----k----k----k----k----k----k----k----b----b----b----b----b----b----b------";
-const AVAIL_FORMS={"19-Alolan-AlolanRattata":"-----","20-Alolan-AlolanRaticate":"-----","26-Alolan-AlolanRaichu":"g--pl","27-Alolan-AlolanSandshrew":"a--b-","28-Alolan-AlolanSandslash":"a--b-","37-Alolan-AlolanVulpix":"g--b-","38-Alolan-AlolanNinetales":"g--b-","50-Alolan-AlolanDiglett":"g--b-","51-Alolan-AlolanDugtrio":"g--b-","52-Alolan-AlolanMeowth":"---ph","53-Alolan-AlolanPersian":"---ph","74-Alolan-AlolanGeodude":"---b-","75-Alolan-AlolanGraveler":"---b-","76-Alolan-AlolanGolem":"---b-","88-Alolan-AlolanGrimer":"---b-","89-Alolan-AlolanMuk":"---b-","103-Alolan-AlolanExeggutor":"a--b-","105-Alolan-AlolanMarowak":"a---h","52-Galarian-GalarianMeowth":"g--ph","77-Galarian-GalarianPonyta":"g----","78-Galarian-GalarianRapidash":"g----","79-Galarian-GalarianSlowpoke":"a--bl","80-Galarian-GalarianSlowbro":"a--bl","83-Galarian-GalarianFarfetch'd":"g---h","110-Galarian-GalarianWeezing":"g--k-","122-Galarian-GalarianMrMime":"c---h","144-Galarian-GalarianArticuno":"c----","145-Galarian-GalarianZapdos":"c----","146-Galarian-GalarianMoltres":"c----","199-Galarian-GalarianSlowking":"a--bl","222-Galarian-GalarianCorsola":"g----","263-Galarian-GalarianZigzagoon":"g----","264-Galarian-GalarianLinoone":"g----","554-Galarian-GalarianDarumaka":"g----","555-Galarian-GalarianDarmanitan":"g----","562-Galarian-GalarianYamask":"g---h","618-Galarian-GalarianStunfisk":"g---l","58-Hisuian-HisuianGrowlithe":"--xp-","59-Hisuian-HisuianArcanine":"--xp-","100-Hisuian-HisuianVoltorb":"--xp-","101-Hisuian-HisuianElectrode":"--xp-","157-Hisuian-HisuianTyphlosion":"--xb-","211-Hisuian-HisuianQwilfish":"--xbh","215-Hisuian-HisuianSneasel":"--xp-","503-Hisuian-HisuianSamurott":"--xb-","570-Hisuian-HisuianZorua":"--xp-","571-Hisuian-HisuianZoroark":"--xp-","628-Hisuian-HisuianBraviary":"--xp-","705-Hisuian-HisuianSliggoo":"--xpl","706-Hisuian-HisuianGoodra":"--xpl","713-Hisuian-HisuianAvalugg":"--xpl","724-Hisuian-HisuianDecidueye":"--xb-","128-Paldean-PaldeanTaurosCombat":"---p-","128-Paldean-PaldeanTaurosBlaze":"---p-","128-Paldean-PaldeanTaurosAqua":"---p-","194-Paldean-PaldeanWooper":"---p-","479-Other-RotomHeat":"gxxph","479-Other-RotomWash":"gxxph","479-Other-RotomFrost":"gxxph","479-Other-RotomFan":"gxxph","479-Other-RotomMow":"gxxph","487-Other-GiratinaOrigin":"-xx--","492-Other-ShayminSky":"-xx--","550-Other-BasculinBlue-Striped":"g--p-","641-Other-TornadusTherian":"--x--","642-Other-ThundurusTherian":"--x--","645-Other-LandorusTherian":"--x--","647-Other-KeldeoResolute":"----h","745-Other-LycanrocMidnight":"a--p-","745-Other-LycanrocDusk":"a--p-","892-Other-UrshifuRapidStrike":"a----","905-Other-EnamorusTherian":"--x--","549-Hisuian-HisuianLilligant":"--xp-","982-Other-DudunsparceThree-Segment":"---p-"};
+// SwSh: g Galar, a Isle of Armor, c Crown Tundra, m Max Lair (Dynamax Adventures) | SV: p Paldea, k Kitakami, b Blueberry, t HOME transfer only | ZA: l Lumiose, h Hyperspace | BDSP/LA: x
+const AV_BASE=["at|x||bt|hl","amt|x||bt|hl","at|x||bt|hl","g|x||bt|hl","gm|x||bt|hl","ag|x||bt|hl","at|x||bt|hl","amt|x||bt|hl","at|x||bt|hl","g|x|||","g|x|||","gm|x|||","|x|||hl","|x|||hl","|x|||hl","|x|||hl","|x|||hl","|x|||hl","|x|||","|x|||","|x|||","|x|||","|x||kt|hl","|x||kt|hl","ag|x|x|kp|hl","agm|x|x|kp|hl","ag|x||bkt|","agm|x||bkt|","cg|x|||","cg|x|||","gm|x|||","cg|x|||","cg|x|||","gm|x|||","agm|x|x|kt|hl","agm|x|x|kt|hl","g|x|x|bkt|","acg|x|x|bkt|","agm|x||p|h","agm|x||p|h","cg|x|x||h","cg|x|x||h","g|x||bt|","gm|x||bt|","gm|x||bt|","|x|x||","|x|x||","|x||bp|","|x||bp|","g|x||bp|","gm|x||bp|","acg|x||bp|h","agm|x||bp|h","ag|x|x|p|","agm|x|x|p|","|x||kp|h","|x||kp|h","g|x|x|kp|","acg|x|x|kp|","ag|x||kt|","ag|x||kt|","agm|x||kt|","ag|x|x||hl","agm|x|x||hl","ag|x|x||hl","g|x|x||hl","gm|x|x||hl","cg|x|x||hl","|x||kt|hl","|x||kt|hl","|x||kt|hl","ag|x|x|bt|","agm|x|x|bt|","|x|x|bkt|","|x|x|bkt|","|x|x|bkt|","acg|x|x||","acg|x|x||","acg|x||bp|hl","amt|x||bp|hl","ag|x|x|bp|","agm|x|x|bp|","acg|x|||h","|x||bt|","|x||bt|","|x||bt|","|x||bt|","|x||bp|","|x||bp|","ag|x||p|","ag|x||p|","g|x|x|kp|hl","gm|x|x|kp|hl","cg|x|x|kp|hl","g|x|x||hl","|x||p|","|x||p|","ag|x|||","agm|x|||","|x|x|p|","|x|x|p|","ag|x||bt|","agm|x||bt|","ag|x|||h","agm|x|||h","gm|x||bt|","gm|x||bt|","agm|x|x||","g|x||kt|","agm|x||kt|","ag|x|x|bt|","agm|x|x|bt|","agm|x|x|bp|","agm|x|x||","agm|x|||hl","ag|x||bt|","agm|x||bt|","ag|x|||","agm|x|||","ag|x|||hl","agm|x|||hl","gm|x|x||h","agm|x|x|bp|hl","gm|x|||","gm|x|x|bt|","gm|x|x|bt|","ag|x|||hl","agm|x||bkp|","acg|x|x|kp|hl","acg|x|x|kp|hl","cg|x||bt|","agm|x||p|","cg|x|x|p|hl","gm|x|x|p|hl","gm|x|x|p|hl","gm|x|x|p|hl","amt|x|x|bt|h","cg|x|||","cg|x|||","cg|x|||","cg|x|||","cg|x|||hl","cg|x|x|kt|","mt|x||bt|","mt|x||bt|","mt|x||bt|","cg|x||p|hl","mt|x||p|hl","cg|x||p|hl","mt|x||t|l","t|x||t|","|x||bt|hl","|x||bt|hl","|x||bt|hl","|x|x|bt|","|x|x|bt|","|x|x|bt|","|x||bt|hl","|x||bt|hl","|x||bt|hl","|x||kt|","|x||kt|","ag|x||kt|","agm|x||kt|","|x|||","|x|||","|x||kt|hl","|x||kt|hl","cg|x|x||h","ag|x||bt|","agm|x||bt|","ag|x|x|kp|hl","acg|x|x|kt|hl","ag|x||p|h","g|x|x||","gm|x|x||","g|x|||","gm|x|||","|x||p|hl","|x||p|hl","|x||p|hl","gm|||bt|","ag|x||p|","agm|x||p|","agm|x|x|kp|","agm|x||kt|","|x||p|","|x||p|","|x||p|","|x|x|kt|","|x||p|","|x||p|","|x|x|kt|","ag|x||kp|","agm|x||kp|","cg|x|x|p|hl","cg|x|x|p|hl","|x|x|p|","amt|x||bp|hl","|x|x|p|","|x|x||","g|x|||","|x||bp|","|x||p|","|x||p|","agm|x||kp|","|x|x|kt|","g|x|x||hl","|x||bt|","|x||bt|","agm|x|x|bp|h","ag|x|x|bp|hl","acg|x|||","ag|x|x|kp|hl","gm|x|x|kp|","|x|x|p|","|x|x|p|","|x||kt|","|x||kt|","cg|x|x|kt|","gm|x|x|kt|","acg|x|||","ag|x|x||","agm|x|x||","cg|x||p|hl","agm|x|x||","agm|x||bt|hl","|x||kp|hl","|x||kp|hl","ag|x||bt|","|x||p|","|x||p|","at|x|x|bt|h","|x|x|kp|","|x||bt|","cg|x||bt|","gm|x||bt|","cg|x|||","cg|x|x|bt|","cg|x|x|bt|","agm|x|||","ag|x|x|bp|","mt|x||bt|","mt|x||bt|","mt|x||bt|","cg|x||p|hl","g|x||p|hl","cg|x||p|hl","mt|x||bt|","mt|x||bt|","t|t|||","ct|x||bt|h","mt|x||bt|h","mt|x||bt|h","ct|x||bt|h","mt|x||bt|h","mt|x||bt|h","ct|x||bt|h","mt|x||bt|h","mt|x||bt|h","|x||kt|","|x||kt|","ag|x|||","agm|x|||","|x|x||","|x|x||","|x|x||","|x|x||","|x|x||","g|x||kt|","g|x||kt|","g|x||kt|","g|x||kt|","g|x||kt|","g|x||kt|","|x|||","|x|||","ag|x||p|","agm|x||p|","ag|x|x|kp|hl","ag|x|x|kp|hl","ag|x|x|kp|hl","|x||kp|","|x||kp|","|x||p|","|x||p|","|x||bp|","|x||bp|","|x||bp|","g|x|||","agm|x|||","g|x|||","ag|x|||","ag|x|||","agm|x|||","|x||p|","|x||p|","ag|x||p|","|x|x|kt|","|x|||","|x|||","cg|x||p|hl","cg|x|||hl","cg|x|||hl","gm|x|||hl","cg|x|||hl","|x||p|hl","|x||p|hl","g|x|||hl","agm|x|||hl","|x||bt|","|x||bt|","|x||kt|","|x||kt|","agm|x|x||hl","|x||p|h","|x||p|h","ag|x|||hl","agm|x|||hl","agm|x|||","ag|x|||","|x||bp|hl","|x||bp|hl","agm|x||bp|","|x||kp|h","|x||kp|h","|x|||","ag|x||bt|","g|x||bt|","agm|x||bt|","|x||p|","|x||p|","cg|x||bp|hl","gm|x||bp|hl","|x||bp|h","|x||bp|h","g|x|||","g|x|||","acg|x|x|kp|","agm|x|x|kp|","ag|x||kt|","agm|x||kt|","cg|x|||","gm|x|||","cg|x|||","gm|x|||","cg|x|||","gm|x|||","cg|x||kt|h","cg|x||kt|h","|x|||","|x|||h","|x||p|hl","|x||p|hl","g|x|x|kt|","gm|x|x|kt|","|x||p|","|x|x|kt|h","gm|x|||hl","g|x|||","cg|x|x|kp|hl","gm|x|x|kp|hl","cg|x|x||","gm|x|x||","cg|x|x||","|x|||","|x|||","|x|||","gm|x|||","|x||bp|","cg|x||p|hl","cg|x||p|hl","cg|x||p|hl","cg|x||bt|hl","gm|x||bt|hl","cg|x||bt|hl","ct|x||t|","ct|x||t|","ct|x||t|","mt|x||bt|h","mt|x||bt|h","mt|x||bt|h","mt|x||bt|h","mt|x||bt|h","t|x||t|","|t||t|","|x|x|bkt|","|x|x|bkt|","|x|x|bkt|","|x|x|bkt|","|x|x|bkt|","|x|x|bkt|","|x|x|bkt|","|x|x|bkt|","|x|x|bkt|","|x|x|kp|h","|x|x|kp|h","|x|x|kp|h","|x|x||","|x|x||","|x|x|kp|","|x|x|kp|","ag|x|x|kp|","ag|x|x|kp|","agm|x|x|kp|","g|x|x||hl","ag|x|x||hl","|x|x|bt|","|x|x|bt|","|x|x|bt|","|x|x|bt|","|x|x||","|x|x||","|x|x||","ag|x|x|p|","agm|x|x|p|","|x|x|kp|","|x|x|p|","|x|x|p|","ag|x|x||","gm|x|x||","g|x|x|p|","gm|x|x|p|","|x|x|kt|","ag|x|x|p|","agm|x|x|p|","ag|x|x||hl","agm|x|x||hl","|x|x|p|","|x|x|p|","|x|x||","|x|x||","|x|x|kt|h","g|x|x|p|","gm|x|x|p|","acg|x|x|kp|","agm|x|x|kp|","ag|x|x|kp|","cg|x|x||h","at|x|x|bp|","|x|x||","ct|x|x|p|","cg|x|x|kp|hl","cg|x|x|kp|hl","cg|x|x|kp|l","gm|x|x|kt|","cg|x|x|kp|hl","acg|x|x|kp|hl","g|x|x|p|hl","g|x|x|p|hl","ag|x|x||","agm|x|x||","ag|x|x|p|","ag|x|x|p|","|x|x||","|x|x|bp|","|x|x|bp|","ag|x|x||","cg|x|x|bp|hl","agm|x|x|bp|hl","cg|x|x|kp|","ag|x|x|bp|","ag|x|x||","ag|x|x|bt|","ag|x|x||","cg|x|x|bt|","cg|x|x|bt|","g|x|x||","|x|x|kt|","cg|x|x|p|hl","cg|x|x|p|hl","|x|x|kt|","cg|x|x|kt|","at|x|x|bt|h","ag|x|x|kp|hl","|x|x|kt|","g|x|x|kt|","gm|x|x|kp|hl","agm|x|x|bp|h","mt|x|x|t|","mt|x|x|t|","mt|x|x|t|","mt|x|x|t|","mt|x|x|t|","mt|x|x|t|h","ct|x|x|t|","mt|x|x|t|","mt|x|x|t|","|x|x|t|","|x|x|t|","|x|x|t|h","|x|x|t|","|x|x|t|","t||||","|||bt|","|||bt|","|||bt|","|||bt|hl","|||bt|hl","|||bt|hl","||x|bt|","||x|bt|","||x|bt|","||||hl","||||hl","ag||||","ag||||","agm||||","g||||h","agm||||h","||||hl","||||hl","||||hl","||||hl","||||hl","||||hl","g||||h","agm||||h","ag||||","ag||||","agm||||","|||bt|","|||bt|","ag||||","agm||||","ag||||","acg||||","agm||||","ag|||bt|hl","ag|||bt|hl","gm||||hl","cg|||kt|","gm|||kt|","cg|||kt|","ag||||","agm||||","agm||||","ag||||h","ag||||h","|||kt|","|||kt|","|||kt|","ag||||hl","ag||||hl","agm||||hl","cg|||bt|","gm|||bt|","ag||x|kp|","agm||x|kp|","agm||x|kp|","ag|||bp|hl","ag|||bp|hl","agm|||bp|hl","acg||||","acg||||","agm||||","ag||||","agm||||","ag|||bt|hl","ag|||bt|hl","gm||||","g||||h","gm||||h","ct||||","ct||||","ct||||","ct||||","cg||||hl","gm||||hl","ag||x|p|","ag||x|p|","g|||bt|","agm|||bt|","cg|||bp|","cg|||bp|","cg|||bp|","cg|||bt|","cg|||bt|","cg|||bt|","|||kt|","|||kt|","cg||||hl","gm||||hl","cg||||hl","|||bp|","|||bp|","agm||||hl","acg||||","agm||||","ag|||p|h","agm|||p|h","ag||||","agm||||","|||bp|","acg|||bt|","agm|||bt|","cg||||","cg||||","g||||","gm||||","agm||||","|||bkp|hl","|||bkp|hl","|||bkp|hl","ag||||","agm||||","ag|||kt|hl","gm|||kt|hl","acg|||kt|hl","g|||bp|","gm|||bp|","g|||bp|","cg|||bp|","agm|||bp|","gm|||p|h","acg||||","agm||||","agm||||hl","ag|||kt|","agm|||kt|","agm||||","cg|||bt|h","agm|||bt|h","ag|||kp|","agm|||kp|","agm||||","ag||x|bp|","ag||x|bp|","ag|||bkt|","ag|||bkt|","gm||||","gm||||","cg|||p|","g|||p|","cg|||p|","ag|||p|","ag|||p|","ct|||bt|h","ct|||bt|h","ct|||bt|h","mt||x|t|","mt||x|t|","mt|||bt|","mt|||bt|","mt||x|t|","mt|||bt|","ct|||t|h","|||bt|h","t||||h","|||bt|hl","|||bt|hl","|||bt|hl","|||bt|hl","|||bt|hl","|||bt|hl","|||bt|hl","|||bt|hl","|||bt|hl","g||||hl","gm||||hl","ag|||bp|hl","ag|||bp|hl","agm|||bp|hl","|||p|hl","|||p|hl","|||p|hl","|||bp|hl","|||bp|hl","|||p|hl","|||p|hl","|||p|hl","|||p|hl","|||p|hl","g||||hl","gm||||hl","||||hl","g|||bt|hl","ag|||bt|hl","g||||hl","gm||||hl","g||||hl","g||||hl","g||||hl","g||||hl","g||||hl","ag|||bt|hl","agm|||bt|hl","ag||||hl","agm||||hl","ag|||p|hl","ag|||p|hl","ag|||p|hl","ag|||p|hl","g||||hl","gm||||hl","cg||||hl","gm||||hl","cg||||hl","gm||||hl","cg||x|p|hl","gm|||p|hl","agm|||p|hl","cg|||bkt|hl","ag||x|kp|hl","ag||x|kp|hl","ag||x|kp|hl","agm|||p|hl","cg|||kt|hl","gm|||kt|hl","g||||hl","agm||||hl","cg||x|p|hl","acg||x|p|hl","cg|||kp|hl","acg|||kp|hl","mt||||l","mt||||l","mt||||l","t|||t|l","|||t|h","t|||t|h","at||x|bt|","at||x|bt|","at||x|bt|","at|||bt|","at|||bt|","at|||bt|","at|||bt|","at|||bt|","at|||bt|","|||bt|","|||bt|","|||bt|","|||p|","|||p|","g|||kt|","gm|||kt|","gm|||kt|","|||bp|h","|||bp|h","|||bkp|","ag|||kt|","agm|||kt|","ag|||kp|","agm|||kp|","ag||||","ag|||p|","ag|||p|","g|||kp|","gm|||kp|","acg|||bt|","agm|||bt|","ag|||kp|","agm|||kp|","ag||||","agm||||","ag|||kp|","agm|||kp|","ag||||","agm||||","g|||p|","ag|||p|","agm|||p|","agm|||bt|","agm|||p|","agm|||p|","ag||||h","ag||||h","ag|||p|h","agm|||p|h","agm||||","g||||","g||||","|||bt|","|||p|","acg||||","gm||||","gm|||kp|h","|||bp|","acg||||hl","acg||||","ag|||kt|","ag|||kt|","ag|||kt|","mt||||","mt||||","mt||||","mt||||","ct|||t|","ct|||t|","mt|||bt|","mt|||bt|","mt||||","mt||||","mt||||","mt||||","mt||||","mt||||","mt||||","mt|||bt|","g|||t|h","t||||h","mt||||","ct||||","mt||||","mt||||","t||||h","t||||h","t||||h","g|||bt|","g|||bt|","g|||bt|","g|||bt|","g|||bt|","g|||bt|","g|||bt|","g|||bt|","g|||bt|","acg|||kp|","agm|||kp|","g|||p|h","cg|||p|h","cg|||p|h","ag||||","ag||||","agm||||","g||||h","agm||||h","cg||||","gm||||","cg||||","agm||||","ag|||kp|","agm|||kp|","cg||||","agm||||","cg|||p|","gm|||p|","gm|||p|","ag|||kp|","ag|||kp|","ag|||kp|","ag|||p|","agm|||p|","agm|||kt|","ag|||kp|","agm|||kp|","g|||p|h","gm|||p|h","cg||||","gm||||","ag||||h","agm||||h","cg|||bp|","gm|||bp|","cg|||kp|","cg|||kp|","gm|||kp|","cg|||kp|","cg|||kp|","gm|||kp|","gm||||","agm|||p|h","acg||||","acg||||h","cg||||h","g||||h","g|||bt|","gm|||bt|","agm|||p|hl","agm|||p|","cg|||p|","gm|||p|","cg|||p|","cg|||p|","agm|||kp|h","agm|||kt|h","cg|||p|","gm|||p|","cg||||","cg||||","cg||||","cg||||","gm|||bt|","cg|||p|","gm|||p|","cg|||p|","g|||t|","g|||t|","g|||t|","at|||bt|","at|||bt|","g|||t|","ct|||t|","ct|||t|","ct|||bt|","ct|||bt|","ct|||t|","||x|t|","||x|bt|h","||x|kt|","||x|kt|","||x|t|","||x|bt|h","||x|t|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||kp|","|||kp|","|||p|h","|||p|h","|||p|","|||p|","|||p|","|||p|h","|||p|h","|||p|h","|||p|h","|||p|h","|||p|h","|||p|h","|||p|","|||p|","|||p|","|||p|","|||p|h","|||p|h","|||p|h","|||p|h","|||p|","|||p|","|||kp|","|||kp|","|||p|","|||p|h","|||p|h","|||bp|","|||bp|","|||p|","|||p|","|||p|h","|||p|h","|||p|h","|||p|","|||p|","|||kp|","|||p|","|||p|","|||p|","|||p|","|||p|h","|||kp|","|||bkp|h","|||kp|h","|||p|h","|||p|h","|||p|h","|||p|","|||p|","|||p|","|||p|h","|||p|h","|||kp|h","|||p|","|||bp|","|||kp|","|||kp|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|h","|||p|h","|||p|h","|||p|h","|||p|h","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||p|","|||kt|","|||kt|","|||kt|","|||kt|","|||kt|","|||kt|","|||kt|","|||bt|","|||bt|","|||bt|","|||bt|","|||bt|","|||bt|","|||bt|","|||bt|"];
+const AV_FORMS={"19-Alolan-AlolanRattata":"||||","20-Alolan-AlolanRaticate":"||||","26-Alolan-AlolanRaichu":"g|||p|l","27-Alolan-AlolanSandshrew":"a|||b|","28-Alolan-AlolanSandslash":"a|||b|","37-Alolan-AlolanVulpix":"g|||b|","38-Alolan-AlolanNinetales":"g|||b|","50-Alolan-AlolanDiglett":"g|||b|","51-Alolan-AlolanDugtrio":"g|||b|","52-Alolan-AlolanMeowth":"|||p|h","53-Alolan-AlolanPersian":"|||p|h","74-Alolan-AlolanGeodude":"|||b|","75-Alolan-AlolanGraveler":"|||b|","76-Alolan-AlolanGolem":"|||b|","88-Alolan-AlolanGrimer":"|||b|","89-Alolan-AlolanMuk":"|||b|","103-Alolan-AlolanExeggutor":"a|||b|","105-Alolan-AlolanMarowak":"a||||h","52-Galarian-GalarianMeowth":"g|||p|h","77-Galarian-GalarianPonyta":"g||||","78-Galarian-GalarianRapidash":"g||||","79-Galarian-GalarianSlowpoke":"a|||b|l","80-Galarian-GalarianSlowbro":"a|||b|l","83-Galarian-GalarianFarfetch'd":"g||||h","110-Galarian-GalarianWeezing":"g|||k|","122-Galarian-GalarianMrMime":"c||||h","144-Galarian-GalarianArticuno":"c||||","145-Galarian-GalarianZapdos":"c||||","146-Galarian-GalarianMoltres":"c||||","199-Galarian-GalarianSlowking":"a|||b|l","222-Galarian-GalarianCorsola":"g||||","263-Galarian-GalarianZigzagoon":"g||||","264-Galarian-GalarianLinoone":"g||||","554-Galarian-GalarianDarumaka":"g||||","555-Galarian-GalarianDarmanitan":"g||||","562-Galarian-GalarianYamask":"g||||h","618-Galarian-GalarianStunfisk":"g||||l","58-Hisuian-HisuianGrowlithe":"||x|p|","59-Hisuian-HisuianArcanine":"||x|p|","100-Hisuian-HisuianVoltorb":"||x|p|","101-Hisuian-HisuianElectrode":"||x|p|","157-Hisuian-HisuianTyphlosion":"||x|b|","211-Hisuian-HisuianQwilfish":"||x|b|h","215-Hisuian-HisuianSneasel":"||x|p|","503-Hisuian-HisuianSamurott":"||x|b|","570-Hisuian-HisuianZorua":"||x|p|","571-Hisuian-HisuianZoroark":"||x|p|","628-Hisuian-HisuianBraviary":"||x|p|","705-Hisuian-HisuianSliggoo":"||x|p|l","706-Hisuian-HisuianGoodra":"||x|p|l","713-Hisuian-HisuianAvalugg":"||x|p|l","724-Hisuian-HisuianDecidueye":"||x|b|","128-Paldean-PaldeanTaurosCombat":"|||p|","128-Paldean-PaldeanTaurosBlaze":"|||p|","128-Paldean-PaldeanTaurosAqua":"|||p|","194-Paldean-PaldeanWooper":"|||p|","479-Other-RotomHeat":"g|x|x|p|h","479-Other-RotomWash":"g|x|x|p|h","479-Other-RotomFrost":"g|x|x|p|h","479-Other-RotomFan":"g|x|x|p|h","479-Other-RotomMow":"g|x|x|p|h","487-Other-GiratinaOrigin":"|x|x||","492-Other-ShayminSky":"|x|x||","550-Other-BasculinBlue-Striped":"g|||p|","641-Other-TornadusTherian":"||x||","642-Other-ThundurusTherian":"||x||","645-Other-LandorusTherian":"||x||","647-Other-KeldeoResolute":"||||h","745-Other-LycanrocMidnight":"a|||p|","745-Other-LycanrocDusk":"a|||p|","892-Other-UrshifuRapidStrike":"a||||","905-Other-EnamorusTherian":"||x||","549-Hisuian-HisuianLilligant":"||x|p|","982-Other-DudunsparceThree-Segment":"|||p|"};
 const GAMES=[
-  {id:"sw",short:"SwSh",name:"Sword / Shield",colour:"#2ea8a8",areas:{g:"Galar",a:"Isle of Armor",c:"Crown Tundra"}},
-  {id:"bd",short:"BDSP",name:"Brilliant Diamond / Shining Pearl",colour:"#5b8def",areas:{x:"BDSP Pokédex"}},
-  {id:"pl",short:"LA",name:"Legends: Arceus",colour:"#c79a3c",areas:{x:"Hisui Pokédex"}},
-  {id:"sv",short:"SV",name:"Scarlet / Violet",colour:"#e0662a",areas:{p:"Paldea",k:"Kitakami",b:"Blueberry Academy"}},
-  {id:"za",short:"ZA",name:"Legends: Z-A",colour:"#3cc08a",areas:{l:"Lumiose",h:"Hyperspace (DLC)"}}
+  {id:"sw",short:"SwSh",name:"Sword / Shield",colour:"#2ea8a8",areas:{g:"Galar",a:"Isle of Armor",c:"Crown Tundra",m:"Max Lair (Dynamax Adventures)",t:"Pokémon HOME (transfer)"}},
+  {id:"bd",short:"BDSP",name:"Brilliant Diamond / Shining Pearl",colour:"#5b8def",areas:{x:"BDSP Pokédex",t:"Pokémon HOME (transfer)"}},
+  {id:"pl",short:"LA",name:"Legends: Arceus",colour:"#c79a3c",areas:{x:"Hisui Pokédex",t:"Pokémon HOME (transfer)"}},
+  {id:"sv",short:"SV",name:"Scarlet / Violet",colour:"#e0662a",areas:{p:"Paldea",k:"Kitakami (Teal Mask)",b:"Blueberry (Indigo Disk)",t:"Pokémon HOME (transfer)"}},
+  {id:"za",short:"ZA",name:"Legends: Z-A",colour:"#3cc08a",areas:{l:"Lumiose",h:"Hyperspace (Mega Dimension)",t:"Pokémon HOME (transfer)"}}
 ];
-function availCodes(p){return p.form?(AVAIL_FORMS[p.key]||"-----"):AVAIL_BASE.substr((p.id-1)*5,5);}
+function avSlots(p){const s=p.form?AV_FORMS[p.key]:AV_BASE[p.id-1];return s?s.split("|"):["","","","",""];}
 function gamesOf(p){
-  const s=availCodes(p),out=[];
-  GAMES.forEach((g,i)=>{if(s[i]!=="-")out.push({g,area:g.areas[s[i]]||""});});
+  const sl=avSlots(p),out=[];
+  GAMES.forEach((g,i)=>{
+    const letters=sl[i]||"";
+    if(!letters)return;
+    out.push({g,area:[...letters].map(c=>g.areas[c]||"").filter(Boolean).join(" · ")});
+  });
   return out;
 }
 function gamesRow(p){
@@ -354,7 +432,7 @@ const SPRITE_FORMS={"19-Alolan-AlolanRattata":"0019-1","20-Alolan-AlolanRaticate
 function spriteUrl(p){
   const stem=p.form?SPRITE_FORMS[p.key]:String(p.id).padStart(4,"0");
   if(!stem)return "";
-  if(!isShiny()||settings.sprite==="normal")return "https://pokejungle.net/sprites/normal/"+stem+".png";
+  if(!isShiny())return "https://pokejungle.net/sprites/normal/"+stem+".png";
   const nat=parseInt(stem.slice(0,4),10);
   return SPRITE_BASE+stem+".png"+(nat>=1001&&nat<=1016?"?v=2":"");
 }
@@ -460,18 +538,18 @@ function updateStats(){
 }
 
 // ── FILTERS ──
-let filters={shiny:0,luxury:0,wild:0,hunting:0,na:0,ot:0},search="",recentView=false,gameFilter="";
+let filters={shiny:0,luxury:0,wild:0,hunting:0,ot:0},search="",recentView=false,gameFilter="";
 function filtersActive(){return Object.values(filters).some(v=>v)||!!gameFilter;}
 function resetFilters(){Object.keys(filters).forEach(f=>{filters[f]=0;});recentView=false;gameFilter="";}
 function filterLabel(f){
-  const names={shiny:isShiny()?"✨ Shiny":"📘 Caught",luxury:"🎯 Ball",wild:"🟢 Wild",hunting:"🔎 Hunt",na:"🚫 N/A",ot:"🧑 My OT"};
-  const opts={shiny:["Any","Have","Need"],luxury:["Any","Have","Need"],wild:["Any","Have","Need"],hunting:["Any","Yes","No"],na:["Show","Only","Hide"],ot:["Any","Yes","No"]};
+  const names={shiny:isShiny()?"Shiny":"Caught",luxury:"Ball",wild:"Wild",hunting:"Hunt",ot:"My OT"};
+  const opts={shiny:["Any","Have","Need"],luxury:["Any","Have","Need"],wild:["Any","Have","Need"],hunting:["Any","Yes","No"],ot:["Any","Yes","No"]};
   return `${names[f]}: ${opts[f][filters[f]]}`;
 }
 function gameMatch(p){
-  const s=availCodes(p);
-  if(gameFilter==="none")return s==="-----";
-  return s[GAMES.findIndex(g=>g.id===gameFilter)]!=="-";
+  const sl=avSlots(p);
+  if(gameFilter==="none")return sl.every(x=>!x);
+  return !!sl[GAMES.findIndex(g=>g.id===gameFilter)];
 }
 function matchFilter(d,p,skipGame){
   const f=filters;
@@ -488,8 +566,6 @@ function matchFilter(d,p,skipGame){
     if(f.wild===2&&(d.wild||d.na))return false;
     if(f.hunting===1&&!d.hunting)return false;
     if(f.hunting===2&&d.hunting)return false;
-    if(f.na===1&&!d.na)return false;
-    if(f.na===2&&d.na)return false;
   }
   if(f.ot===1&&!d.ot)return false;
   if(f.ot===2&&d.ot)return false;
@@ -507,16 +583,16 @@ function cardHTML(p,d){
   const pills=[];
   if(sh){
     if(d.na)pills.push('<span class="pill">N/A</span>');
-    if(d.hunting)pills.push('<span class="pill hunt">🔎 hunting</span>');
+    if(d.hunting)pills.push('<span class="pill hunt">hunting</span>');
     if((Number(d.count)||0)>0)pills.push(`<span class="pill cnt">×${fmtNum(d.count)}</span>`);
     if(d.shiny&&d.date)pills.push(`<span class="pill date">${fmtDate(d.date)}</span>`);
     if(d.shiny&&d.method)pills.push(`<span class="pill">${esc(d.method)}</span>`);
   }
-  if(d.ot)pills.push('<span class="pill ot">🧑 My OT</span>');
+  if(d.ot)pills.push('<span class="pill ot">My OT</span>');
   const row=(f,cls,label,dis)=>`<div class="check-row${dis?" disabled":""}" data-act="${f}"><div class="box ${cls}${d[f]?" checked":""}">${d[f]?"✓":""}</div><span class="check-label">${label}</span></div>`;
   const checks=sh
-    ? row("shiny","shiny-box","✨ Shiny",d.na)+row("luxury","luxury-box",`🎯 Caught in ${esc(settings.targetBall)}`,false)+row("wild","wild-box","🟢 Caught Wild",false)+row("ot","ot-box","🧑 My OT",false)
-    : row("caught","shiny-box","📘 Caught",false)+row("ot","ot-box","🧑 My OT",false);
+    ? row("shiny","shiny-box","Shiny",d.na)+row("luxury","luxury-box",`Caught in ${esc(settings.targetBall)}`,false)+row("wild","wild-box","Caught wild",false)+row("ot","ot-box","My OT",false)
+    : row("caught","shiny-box","Caught",false)+row("ot","ot-box","My OT",false);
   return `<div class="card-top"><div><span class="card-num">#${pad(p.id)}</span>${bx?`<span class="card-box">B${bx.box}·${bx.slot}</span>`:""}</div><button class="more-btn" data-act="more" aria-label="Details">⋯</button></div>
 <div class="card-main">${spriteImg(p,"sprite")}<div class="card-text"><div class="card-name">${esc(p.name)}${p.form?`<span class="form-tag">${esc(p.form)}</span>`:""}</div>
 ${pills.length?`<div class="card-meta">${pills.join("")}</div>`:""}</div></div>
@@ -567,14 +643,14 @@ function render(){
     const all=POKEMON.map(p=>[p,get(p.key)]).filter(([p,d])=>d.shiny&&textMatch(p,q));
     const dated=all.filter(([,d])=>d.date).sort((a,b)=>b[1].date.localeCompare(a[1].date)||a[0].id-b[0].id);
     const undated=all.length-dated.length;
-    frag.appendChild(sectionBreak("recent","🕒 Recent shinies ("+dated.length+")","hunt-section",
+    frag.appendChild(sectionBreak("recent","Recent shinies ("+dated.length+")","hunt-section",
       undated?{note:`${undated} shiny entr${undated===1?"y has":"ies have"} no date. Open ⋯ on a card to add one.`}:null));
     dated.forEach(([p])=>{frag.appendChild(makeCard(p));vis++;});
   }else{
     if(sh){
       const hunt=POKEMON.filter(p=>{const d=get(p.key);return d.hunting&&textMatch(p,q)&&matchFilter(d,p);});
       if(hunt.length){
-        frag.appendChild(sectionBreak("hunting","🔎 Currently hunting ("+hunt.length+")","hunt-section"));
+        frag.appendChild(sectionBreak("hunting","Currently hunting ("+hunt.length+")","hunt-section"));
         hunt.forEach(p=>{frag.appendChild(makeCard(p));vis++;});
       }
     }
@@ -672,7 +748,7 @@ function renderSheet(){
   const listed=`<div class="sh-label">Listed in</div>${gamesList(p)}<div class="sh-note">Taken from each game's Pokédex listing in the organizer spreadsheet. It's a guide, not a guarantee.</div>`;
   if(!isShiny()){
     $("sheet").innerHTML=head+
-      `<div class="sh-grid2"><button class="tbtn${d.caught?" on-shiny":""}" data-sact="caught">📘 Caught</button><button class="tbtn${d.ot?" on-ot":""}" data-sact="ot">🧑 My OT</button></div>`+
+      `<div class="sh-grid2"><button class="tbtn${d.caught?" on-shiny":""}" data-sact="caught">Caught</button><button class="tbtn${d.ot?" on-ot":""}" data-sact="ot">My OT</button></div>`+
       listed+`<button class="sh-done" data-sact="close">Done</button>`;
     return;
   }
@@ -680,15 +756,15 @@ function renderSheet(){
   const methodOpts=['<option value="">— not set —</option>'].concat(METHODS.map(m=>`<option${d.method===m?" selected":""}>${esc(m)}</option>`)).join("");
   $("sheet").innerHTML=head+`
 <div class="sh-grid">
-  <button class="tbtn${d.shiny?" on-shiny":""}" data-sact="shiny"${d.na?" disabled":""}>✨ Shiny</button>
-  <button class="tbtn${d.luxury?" on-lux":""}" data-sact="luxury">🎯 Caught in ${esc(settings.targetBall)}</button>
-  <button class="tbtn${d.wild?" on-wild":""}" data-sact="wild">🟢 Caught Wild</button>
+  <button class="tbtn${d.shiny?" on-shiny":""}" data-sact="shiny"${d.na?" disabled":""}>Shiny</button>
+  <button class="tbtn${d.luxury?" on-lux":""}" data-sact="luxury">Caught in ${esc(settings.targetBall)}</button>
+  <button class="tbtn${d.wild?" on-wild":""}" data-sact="wild">Caught wild</button>
 </div>
 <div class="sh-grid2">
-  <button class="tbtn${d.hunting?" on-hunt":""}" data-sact="hunting"${d.shiny||d.na?" disabled":""}>🔎 Hunting</button>
-  <button class="tbtn${d.na?" on-na":""}" data-sact="na"${d.shiny?" disabled":""}>🚫 Can't be shiny</button>
+  <button class="tbtn${d.hunting?" on-hunt":""}" data-sact="hunting"${d.shiny||d.na?" disabled":""}>Hunting</button>
+  <button class="tbtn${d.na?" on-na":""}" data-sact="na"${d.shiny?" disabled":""}>Can't be shiny</button>
 </div>
-<div class="sh-grid2"><button class="tbtn${d.ot?" on-ot":""}" data-sact="ot">🧑 My OT</button><span></span></div>
+<div class="sh-grid2"><button class="tbtn${d.ot?" on-ot":""}" data-sact="ot">My OT</button><span></span></div>
 ${d.shiny?'<div class="sh-note">Shiny caught, so hunting and N/A are switched off.</div>':""}
 <div class="sh-label">Encounters</div>
 <div class="sh-counter"><button class="tbtn" data-sact="add" data-n="-1">−1</button><input id="sh-count" type="number" inputmode="numeric" min="0" value="${Number(d.count)||0}"><button class="tbtn" data-sact="add" data-n="1">+1</button></div>
@@ -740,13 +816,11 @@ $("list").addEventListener("click",e=>{
 
 // ── FILTER / SETTINGS PAINTING ──
 function paintFilters(){
-  ["shiny","luxury","wild","hunting","na","ot"].forEach(f=>{
+  ["shiny","luxury","wild","hunting","ot"].forEach(f=>{
     const b=$("f-"+f);if(!b)return;
     b.textContent=filterLabel(f);
     b.className="ftog"+(filters[f]===1?" have":filters[f]===2?" havent":"");
   });
-  $("f-sprite").textContent=settings.sprite==="normal"?"🖼️ Sprites: Normal":"✨ Sprites: Shiny";
-  $("f-sprite").className="ftog"+(settings.sprite==="normal"?" view-on":"");
   $("f-game").className="ftog"+(gameFilter?" have":"");
 }
 function paintRecent(){$("f-recent").className="ftog"+(recentView?" view-on":"");}
@@ -756,14 +830,13 @@ function paintCollapse(){
 }
 function paintModeUI(){
   const sh=isShiny();
-  ["f-luxury","f-wild","f-hunting","f-na","f-recent"].forEach(id=>{$(id).style.display=sh?"":"none";});
+  ["f-luxury","f-wild","f-hunting","f-recent"].forEach(id=>{$(id).style.display=sh?"":"none";});
   $("mode-shiny").classList.toggle("on",sh);
   $("mode-normal").classList.toggle("on",!sh);
-  $("f-sprite").style.display=sh?"":"none";
   $("ball-global").style.display=sh?"":"none";
   ["Shiny","Ball","Wild","Encounters"].forEach((t,i)=>{$("sl-"+(i+1)).textContent=sh?t:["Caught","Needed","My OT","Total"][i];});
   $("h-sub").textContent=sh?"National Pokédex · Gen 1–9":"National Pokédex · Gen 1–9 · Normal dex";
-  $("h-title").textContent=sh?"✨ Shiny Living Dex":"📘 Living Dex";
+  $("h-title").textContent=sh?"Shiny Living Dex":"Living Dex";
   document.body.dataset.mode=mode;
 }
 function paintAll(){paintModeUI();paintFilters();paintRecent();paintCollapse();render();}
@@ -785,9 +858,9 @@ function refreshGameCounts(){
   POKEMON.forEach(p=>{
     const d=get(p.key);
     if(!textMatch(p,q)||!matchFilter(d,p,true))return;
-    const a=availCodes(p);
-    GAMES.forEach((g,i)=>{if(a[i]!=="-")c[g.id]++;});
-    if(a==="-----")c.none++;
+    const sl=avSlots(p);
+    GAMES.forEach((g,i)=>{if(sl[i])c[g.id]++;});
+    if(sl.every(x=>!x))c.none++;
   });
   const sel=$("f-game");if(!sel)return;
   Array.from(sel.options).forEach(o=>{
@@ -826,7 +899,7 @@ function sanitiseEntries(src,m){
 function wire(){
   // game dropdown
   const sel=$("f-game");
-  sel.innerHTML='<option value="">🎮 Game: Any</option>'+GAMES.map(g=>`<option value="${g.id}">${g.short}</option>`).join("")+'<option value="none">None listed</option>';
+  sel.innerHTML='<option value="">Game: Any</option>'+GAMES.map(g=>`<option value="${g.id}">${g.short}</option>`).join("")+'<option value="none">None listed</option>';
   sel.addEventListener("change",e=>{gameFilter=e.target.value;paintFilters();render();});
 
   // gen and form jump buttons
@@ -845,13 +918,12 @@ function wire(){
   });
 
   $("search").addEventListener("input",e=>{search=e.target.value;render();});
-  ["shiny","luxury","wild","hunting","na","ot"].forEach(f=>{
+  ["shiny","luxury","wild","hunting","ot"].forEach(f=>{
     $("f-"+f).addEventListener("click",()=>{filters[f]=(filters[f]+1)%3;paintFilters();render();});
   });
   $("f-recent").addEventListener("click",()=>{recentView=!recentView;paintRecent();render();});
   $("f-reset").addEventListener("click",()=>{resetFilters();paintFilters();paintRecent();$("f-game").value="";render();});
   $("f-toggle").addEventListener("click",()=>{settings.filtersCollapsed=!settings.filtersCollapsed;saveSettings();paintCollapse();});
-  $("f-sprite").addEventListener("click",()=>{settings.sprite=settings.sprite==="normal"?"shiny":"normal";saveSettings();paintFilters();rerenderKeepScroll();});
 
   const bm=$("ball-main");
   bm.innerHTML=BALLS.map(b=>`<option${settings.targetBall===b?" selected":""}>${esc(b)}</option>`).join("");
