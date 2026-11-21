@@ -1,11 +1,18 @@
 {
-  "name": "Shiny Living Dex Tracker",
-  "short_name": "Shiny Dex",
-  "description": "National Pokédex shiny living dex tracker — Gen 1–9",
+  "name": "Living Dex Tracker",
+  "short_name": "Living Dex",
+  "description": "National Pokédex living dex tracker: normal and shiny",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0a0018",
-  "theme_color": "#6a0dad",
+  "background_color": "#f3f4f6",
+  "theme_color": "#1d2330",
   "orientation": "portrait",
-  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
 }
